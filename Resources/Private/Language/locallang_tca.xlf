@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<xliff version="1.0">
+    <file source-language="en" datatype="plaintext" original="messages" date="2021-04-26T11:03:17Z"
+          product-name="video_vtt">
+        <header/>
+        <body>
+            <trans-unit id="sys_file_reference.loop">
+                <source>Loop Video</source>
+            </trans-unit>
+            <trans-unit id="sys_file_reference.muted">
+                <source>Muted</source>
+            </trans-unit>
+            <trans-unit id="sys_file_reference.showinfo">
+                <source>Show info</source>
+            </trans-unit>
+            <trans-unit id="sys_file_reference.showcontrols">
+                <source>Show Controls</source>
+            </trans-unit>
+            <trans-unit id="sys_file.tracks">
+                <source>Text Tracks and Time-based Data</source>
+            </trans-unit>
+            <trans-unit id="sys_file_reference.track_label">
+                <source>Track label</source>
+            </trans-unit>
+            <trans-unit id="sys_file_reference.track_label.description">
+                <source>A user-readable title of the text track which is used by the browser when listing available text tracks.</source>
+            </trans-unit>
+            <trans-unit id="sys_file_reference.track_language">
+                <source>Track language</source>
+            </trans-unit>
+            <trans-unit id="sys_file_reference.track_language.description">
+                <source>Language of the track text data. It must be a valid BCP 47 language tag.</source>
+            </trans-unit>
+            <trans-unit id="sys_file_reference.track_type">
+                <source>Track type</source>
+            </trans-unit>
+            <trans-unit id="sys_file_reference.track_type.description">
+                <source>How the text track is meant to be used. If omitted the default kind is subtitles.</source>
+            </trans-unit>
+            <trans-unit id="sys_file_reference.track_type.subtitles">
+                <source>Subtitles</source>
+            </trans-unit>
+            <trans-unit id="sys_file_reference.track_type.captions">
+                <source>Captions / Audio Description (for the hearing impaired)</source>
+            </trans-unit>
+            <trans-unit id="sys_file_reference.track_type.descriptions">
+                <source>Video Description (for the visually impaired)</source>
+            </trans-unit>
+            <trans-unit id="sys_file_reference.track_type.chapters">
+                <source>Chapters</source>
+            </trans-unit>
+            <trans-unit id="sys_file_reference.track_type.metadata">
+                <source>Metadata</source>
+            </trans-unit>
+            <trans-unit id="sys_file_reference.track_default">
+                <source>Default attribute</source>
+            </trans-unit>
+        </body>
+    </file>
+</xliff>
