@@ -18,7 +18,7 @@
     "typo3/cms-core": "^10"
   },
   "replace": {
-    "video_vtt": "self.version"
+    "traw/video_vtt": "self.version"
   },
   "extra": {
     "typo3/cms": {
