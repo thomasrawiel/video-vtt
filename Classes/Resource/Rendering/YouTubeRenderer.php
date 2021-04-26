@@ -33,7 +33,7 @@ class YouTubeRenderer extends \TYPO3\CMS\Core\Resource\Rendering\YouTubeRenderer
         $options['mute'] = $file->getProperty('mute');
         $options['controls'] = $file->getProperty('controls');
         $options['showinfo'] = $file->getProperty('showinfo');
-        $options['no-cookie'] = true;
+        $options['no-cookie'] = true; //always use no-cookie domain
 
         $urlParams = [
             'autohide=1',
@@ -51,13 +51,11 @@ class YouTubeRenderer extends \TYPO3\CMS\Core\Resource\Rendering\YouTubeRenderer
             $urlParams[] = 'loop=1&amp;playlist=' . $videoId;
         }
 
-        $youTubeUrl = sprintf(
+        return sprintf(
             'https://www.youtube%s.com/embed/%s?%s',
             !isset($options['no-cookie']) || !empty($options['no-cookie']) ? '-nocookie' : '',
             $videoId,
             implode('&amp;', $urlParams)
         );
-
-        return $youTubeUrl;
     }
 }
