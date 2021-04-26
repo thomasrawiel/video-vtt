@@ -43,7 +43,6 @@ class VideoTagRenderer extends \TYPO3\CMS\Core\Resource\Rendering\VideoTagRender
         $options['controls'] = $file->getProperty('controls');
         $options['loop'] = $file->getProperty('loop');
 
-
         // If autoplay isn't set manually check if $file is a FileReference take autoplay from there
         if (!isset($options['autoplay']) && $file instanceof FileReference) {
             $autoplay = $file->getProperty('autoplay');
@@ -117,7 +116,11 @@ class VideoTagRenderer extends \TYPO3\CMS\Core\Resource\Rendering\VideoTagRender
         return $this->possibleMimeTypes;
     }
 
-
+    /**
+     * @param FileInterface $file
+     * @param bool $usedPathsRelativeToCurrentScript
+     * @return string
+     */
     protected function getSource(FileInterface $file, bool $usedPathsRelativeToCurrentScript): string
     {
         $source = (string)$file->getPublicUrl($usedPathsRelativeToCurrentScript);
@@ -190,6 +193,7 @@ class VideoTagRenderer extends \TYPO3\CMS\Core\Resource\Rendering\VideoTagRender
         if (empty($publicUrl)) {
             return false;
         }
+        //dont render subtitles without a track language
         if ($trackType === 'subtitles' && empty($trackLanguage)) {
             return false;
         }

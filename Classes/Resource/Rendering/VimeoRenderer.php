@@ -28,21 +28,16 @@ class VimeoRenderer extends \TYPO3\CMS\Core\Resource\Rendering\VimeoRenderer
     {
         $videoId = $this->getVideoIdFromFile($file);
 
-
-        //i dont care
-        $options = [
-            'autoplay' => $file->getProperty('autoplay'),
-            'loop' => $file->getProperty('loop'),
-            'mute' => $file->getProperty('mute'),
-            'controls' => $file->getProperty('controls'),
-            'showinfo' => $file->getProperty('showinfo'),
-            'no-cookie' => true, //always true
-        ];
+        $options['autoplay'] = $file->getProperty('autoplay');
+        $options['loop'] = $file->getProperty('loop');
+        $options['mute'] = $file->getProperty('mute');
+        $options['controls'] = $file->getProperty('controls');
+        $options['showinfo'] = $file->getProperty('showinfo');
 
         $urlParams = [];
         $urlParams[] = 'autoplay=' . $options['autoplay'];
         $urlParams[] = 'muted=' . $options['mute'];
-        $urlParams[] = 'loop='.$options['loop'];
+        $urlParams[] = 'loop=' . $options['loop'];
         $urlParams[] = 'title=' . $options['showinfo'];
         $urlParams[] = 'byline=' . $options['showinfo'];
         $urlParams[] = 'playsinline=1';
