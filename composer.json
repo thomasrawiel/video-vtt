@@ -1,0 +1,28 @@
+{
+  "name": "traw/video-vtt",
+  "description": "Extend TYPO3 video functionality",
+  "type": "typo3-cms-extension",
+  "keywords": [
+    "TYPO3 CMS",
+    "Video",
+    "Utility",
+    "VTT"
+  ],
+  "license": "GPL-3.0-or-later",
+  "autoload": {
+    "psr-4": {
+      "TRAW\\VideoVtt\\": "Classes/"
+    }
+  },
+  "require": {
+    "typo3/cms-core": "^10"
+  },
+  "replace": {
+    "video_vtt": "self.version"
+  },
+  "extra": {
+    "typo3/cms": {
+      "extension-key": "video_vtt"
+    }
+  }
+}
