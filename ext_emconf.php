@@ -11,6 +11,7 @@ $EM_CONF[$_EXTKEY] = [
     'constraints' => [
         'depends' => [
             'typo3' => '10.0.0-11.99.99',
+            'filemetadata' => '10.0.0-11.99.99'
         ],
         'conflicts' => [
         ],
