@@ -44,7 +44,6 @@ call_user_func(function ($_EXTKEY = 'video_vtt', $table = 'sys_file_reference') 
                 'AND' => [
                     'FIELD:fieldname:=:tracks',
                     'FIELD:tablenames:=:sys_file_metadata',
-                    'FIELD:table_local:=:sys_file',
                 ]
             ],
             'exclude' => true,
@@ -60,7 +59,6 @@ call_user_func(function ($_EXTKEY = 'video_vtt', $table = 'sys_file_reference') 
                 'AND' => [
                     'FIELD:fieldname:=:tracks',
                     'FIELD:tablenames:=:sys_file_metadata',
-                    'FIELD:table_local:=:sys_file',
                 ]
             ],
             'exclude' => true,
@@ -77,7 +75,6 @@ call_user_func(function ($_EXTKEY = 'video_vtt', $table = 'sys_file_reference') 
                 'AND' => [
                     'FIELD:fieldname:=:tracks',
                     'FIELD:tablenames:=:sys_file_metadata',
-                    'FIELD:table_local:=:sys_file',
                 ]
             ],
             'exclude' => true,
@@ -116,7 +113,6 @@ call_user_func(function ($_EXTKEY = 'video_vtt', $table = 'sys_file_reference') 
                 'AND' => [
                     'FIELD:fieldname:=:tracks',
                     'FIELD:tablenames:=:sys_file_metadata',
-                    'FIELD:table_local:=:sys_file',
                 ]
             ],
             'exclude' => true,

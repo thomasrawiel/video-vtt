@@ -18,7 +18,6 @@ call_user_func(function ($_EXTKEY = 'video_vtt', $table = 'sys_file_metadata') {
                     'foreign_match_fields' => [
                         'fieldname' => 'tracks',
                         'tablenames' => 'sys_file_metadata',
-                        'table_local' => 'sys_file',
                     ],
                 ],
                 'vtt'
