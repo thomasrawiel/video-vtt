@@ -18,7 +18,6 @@ use TYPO3\CMS\Core\Resource\FileInterface;
  */
 class VimeoRenderer extends \TYPO3\CMS\Core\Resource\Rendering\VimeoRenderer
 {
-
     /**
      * @param array $options
      * @param FileInterface $file

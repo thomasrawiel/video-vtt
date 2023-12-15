@@ -1,4 +1,5 @@
 <?php
+
 defined('TYPO3') || die('Access denied.');
 
 call_user_func(function ($_EXTKEY = 'video_vtt', $table = 'sys_file_metadata') {
@@ -21,15 +22,13 @@ call_user_func(function ($_EXTKEY = 'video_vtt', $table = 'sys_file_metadata') {
                     ],
                 ],
                 'vtt'
-            )
+            ),
         ],
     ]);
     \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addToAllTCAtypes(
         $table,
         'tracks',
-        \TYPO3\CMS\Core\Resource\File::FILETYPE_VIDEO,
+        (string)\TYPO3\CMS\Core\Resource\File::FILETYPE_VIDEO,
         'after:duration'
     );
-
-
 });

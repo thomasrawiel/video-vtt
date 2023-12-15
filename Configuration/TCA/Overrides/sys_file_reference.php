@@ -1,4 +1,5 @@
 <?php
+
 defined('TYPO3') or die('Access denied.');
 
 call_user_func(function ($_EXTKEY = 'video_vtt', $table = 'sys_file_reference') {
@@ -9,7 +10,7 @@ call_user_func(function ($_EXTKEY = 'video_vtt', $table = 'sys_file_reference') 
             'config' => [
                 'type' => 'check',
                 'renderType' => 'checkboxToggle',
-                'default' => 0
+                'default' => 0,
             ],
         ],
         'mute' => [
@@ -27,7 +28,7 @@ call_user_func(function ($_EXTKEY = 'video_vtt', $table = 'sys_file_reference') 
             'config' => [
                 'type' => 'check',
                 'renderType' => 'checkboxToggle',
-                'default' => 0
+                'default' => 0,
             ],
         ],
         'controls' => [
@@ -36,7 +37,7 @@ call_user_func(function ($_EXTKEY = 'video_vtt', $table = 'sys_file_reference') 
             'config' => [
                 'type' => 'check',
                 'renderType' => 'checkboxToggle',
-                'default' => 0
+                'default' => 0,
             ],
         ],
         'track_label' => [
@@ -44,22 +45,22 @@ call_user_func(function ($_EXTKEY = 'video_vtt', $table = 'sys_file_reference') 
                 'AND' => [
                     'FIELD:fieldname:=:tracks',
                     'FIELD:tablenames:=:sys_file_metadata',
-                ]
+                ],
             ],
             'exclude' => true,
             'label' => 'LLL:EXT:video_vtt/Resources/Private/Language/locallang_tca.xlf:sys_file_reference.track_label',
             'description' => 'LLL:EXT:video_vtt/Resources/Private/Language/locallang_tca.xlf:sys_file_reference.track_label.description',
             'config' => [
                 'type' => 'input',
-                'size' => 30
-            ]
+                'size' => 30,
+            ],
         ],
         'track_language' => [
             'displayCond' => [
                 'AND' => [
                     'FIELD:fieldname:=:tracks',
                     'FIELD:tablenames:=:sys_file_metadata',
-                ]
+                ],
             ],
             'exclude' => true,
             'label' => 'LLL:EXT:video_vtt/Resources/Private/Language/locallang_tca.xlf:sys_file_reference.track_language',
@@ -67,15 +68,15 @@ call_user_func(function ($_EXTKEY = 'video_vtt', $table = 'sys_file_reference') 
             'config' => [
                 'type' => 'input',
                 'size' => 30,
-                'max' => 30
-            ]
+                'max' => 30,
+            ],
         ],
         'track_type' => [
             'displayCond' => [
                 'AND' => [
                     'FIELD:fieldname:=:tracks',
                     'FIELD:tablenames:=:sys_file_metadata',
-                ]
+                ],
             ],
             'exclude' => true,
             'label' => 'LLL:EXT:video_vtt/Resources/Private/Language/locallang_tca.xlf:sys_file_reference.track_type',
@@ -86,34 +87,34 @@ call_user_func(function ($_EXTKEY = 'video_vtt', $table = 'sys_file_reference') 
                 'items' => [
                     [
                         'LLL:EXT:video_vtt/Resources/Private/Language/locallang_tca.xlf:sys_file_reference.track_type.captions',
-                        'captions'
+                        'captions',
                     ],
                     [
                         'LLL:EXT:video_vtt/Resources/Private/Language/locallang_tca.xlf:sys_file_reference.track_type.chapters',
-                        'chapters'
+                        'chapters',
                     ],
                     [
                         'LLL:EXT:video_vtt/Resources/Private/Language/locallang_tca.xlf:sys_file_reference.track_type.descriptions',
-                        'descriptions'
+                        'descriptions',
                     ],
                     [
                         'LLL:EXT:video_vtt/Resources/Private/Language/locallang_tca.xlf:sys_file_reference.track_type.metadata',
-                        'metadata'
+                        'metadata',
                     ],
                     [
                         'LLL:EXT:video_vtt/Resources/Private/Language/locallang_tca.xlf:sys_file_reference.track_type.subtitles',
-                        'subtitles'
+                        'subtitles',
                     ],
                 ],
                 'default' => 'subtitles',
-            ]
+            ],
         ],
         'track_default' => [
             'displayCond' => [
                 'AND' => [
                     'FIELD:fieldname:=:tracks',
                     'FIELD:tablenames:=:sys_file_metadata',
-                ]
+                ],
             ],
             'exclude' => true,
             'label' => 'LLL:EXT:video_vtt/Resources/Private/Language/locallang_tca.xlf:sys_file_reference.track_default',
@@ -121,7 +122,7 @@ call_user_func(function ($_EXTKEY = 'video_vtt', $table = 'sys_file_reference') 
             'config' => [
                 'type' => 'check',
                 'default' => 0,
-            ]
+            ],
         ],
     ]);
     //changed order of fields
