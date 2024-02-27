@@ -123,7 +123,7 @@ class VideoTagRenderer extends \TYPO3\CMS\Core\Resource\Rendering\VideoTagRender
      */
     protected function getSource(FileInterface $file, bool $usedPathsRelativeToCurrentScript): string
     {
-        $source = (string)$file->getPublicUrl($usedPathsRelativeToCurrentScript);
+        $source = (string)$file->getPublicUrl();
 
         // We need an absolute path for the backend
         if (($GLOBALS['TYPO3_REQUEST'] ?? null) instanceof ServerRequestInterface

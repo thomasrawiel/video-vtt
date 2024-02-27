@@ -86,24 +86,24 @@ call_user_func(function ($_EXTKEY = 'video_vtt', $table = 'sys_file_reference') 
                 'renderType' => 'selectSingle',
                 'items' => [
                     [
-                        'LLL:EXT:video_vtt/Resources/Private/Language/locallang_tca.xlf:sys_file_reference.track_type.captions',
-                        'captions',
+                        'label' => 'LLL:EXT:video_vtt/Resources/Private/Language/locallang_tca.xlf:sys_file_reference.track_type.captions',
+                        'value' => 'captions',
                     ],
                     [
-                        'LLL:EXT:video_vtt/Resources/Private/Language/locallang_tca.xlf:sys_file_reference.track_type.chapters',
-                        'chapters',
+                        'label' => 'LLL:EXT:video_vtt/Resources/Private/Language/locallang_tca.xlf:sys_file_reference.track_type.chapters',
+                        'value' => 'chapters',
                     ],
                     [
-                        'LLL:EXT:video_vtt/Resources/Private/Language/locallang_tca.xlf:sys_file_reference.track_type.descriptions',
-                        'descriptions',
+                        'label' => 'LLL:EXT:video_vtt/Resources/Private/Language/locallang_tca.xlf:sys_file_reference.track_type.descriptions',
+                        'value' => 'descriptions',
                     ],
                     [
-                        'LLL:EXT:video_vtt/Resources/Private/Language/locallang_tca.xlf:sys_file_reference.track_type.metadata',
-                        'metadata',
+                        'label' => 'LLL:EXT:video_vtt/Resources/Private/Language/locallang_tca.xlf:sys_file_reference.track_type.metadata',
+                        'value' => 'metadata',
                     ],
                     [
-                        'LLL:EXT:video_vtt/Resources/Private/Language/locallang_tca.xlf:sys_file_reference.track_type.subtitles',
-                        'subtitles',
+                        'label' => 'LLL:EXT:video_vtt/Resources/Private/Language/locallang_tca.xlf:sys_file_reference.track_type.subtitles',
+                        'value' => 'subtitles',
                     ],
                 ],
                 'default' => 'subtitles',
@@ -131,6 +131,6 @@ call_user_func(function ($_EXTKEY = 'video_vtt', $table = 'sys_file_reference') 
         --linebreak--,autoplay,mute,loop,showinfo,controls,';
 
     $GLOBALS['TCA'][$table]['palettes']['basicoverlayPalette']['showitem']
-    = 'title,description,
+        = 'title,description,
     --linebreak--,track_default,--linebreak--,track_label,track_language,track_type';
 });
