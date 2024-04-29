@@ -12,37 +12,89 @@ namespace TRAW\VideoVtt\Resource\Rendering;
  */
 
 use TYPO3\CMS\Core\Resource\FileInterface;
+use TYPO3\CMS\Core\Resource\FileReference;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Vimeo renderer class
  */
 class VimeoRenderer extends \TYPO3\CMS\Core\Resource\Rendering\VimeoRenderer
 {
+    protected function collectOptions(array $options, FileInterface $file)
+    {
+        // Check for an autoplay option at the file reference itself, if not overridden yet.
+        if (!isset($options['autoplay']) && $file instanceof FileReference) {
+            $autoplay = $file->getProperty('autoplay');
+            if ($autoplay !== null) {
+                $options['autoplay'] = $autoplay;
+            }
+        }
+
+        if (!isset($options['allow'])) {
+            $options['allow'] = 'fullscreen';
+            if (!empty($options['autoplay'])) {
+                $options['allow'] = 'autoplay; fullscreen';
+            }
+        }
+
+        if (!isset($options['picinpic'])) {
+            $pip = $file->getProperty('picinpic');
+            if ($pip !== null) {
+                $options['picinpic'] = $pip;
+            }
+        }
+
+        if (!isset($options['controls'])) {
+            $controls = $file->getProperty('controls');
+            if ($controls !== null) {
+                $options['controls'] = $controls;
+            }
+        }
+
+        return $options;
+    }
+
     /**
-     * @param array $options
+     * @param array         $options
      * @param FileInterface $file
+     *
      * @return string
      */
     protected function createVimeoUrl(array $options, FileInterface $file)
     {
-        $videoId = $this->getVideoIdFromFile($file);
+        $videoIdRaw = $this->getVideoIdFromFile($file);
+        $videoIdRaw = GeneralUtility::trimExplode('/', $videoIdRaw, true);
 
-        $options['autoplay'] = $file->getProperty('autoplay');
-        $options['loop'] = $file->getProperty('loop');
-        $options['mute'] = $file->getProperty('mute');
-        $options['controls'] = $file->getProperty('controls');
-        $options['showinfo'] = $file->getProperty('showinfo');
+        $videoId = $videoIdRaw[0];
+        $hash = $videoIdRaw[1] ?? null;
 
         $urlParams = [];
-        $urlParams[] = 'autoplay=' . $options['autoplay'];
-        $urlParams[] = 'muted=' . $options['mute'];
-        $urlParams[] = 'loop=' . $options['loop'];
-        $urlParams[] = 'title=' . $options['showinfo'];
-        $urlParams[] = 'byline=' . $options['showinfo'];
-        $urlParams[] = 'playsinline=1';
+        if (!empty($hash)) {
+            $urlParams[] = 'h=' . $hash;
+        }
+        if (!empty($options['autoplay'])) {
+            $urlParams[] = 'autoplay=1';
+            // If autoplay is enabled, enforce muted=1, see https://developer.chrome.com/blog/autoplay/
+            $urlParams[] = 'muted=1';
+        }
+        if (!empty($options['loop'])) {
+            $urlParams[] = 'loop=1';
+        }
 
+
+        if (isset($options['api']) && (int)$options['api'] === 1) {
+            $urlParams[] = 'api=1';
+        }
+        if (!isset($options['no-cookie']) || !empty($options['no-cookie'])) {
+            $urlParams[] = 'dnt=1';
+        }
+
+        $urlParams[] = 'controls=' . (int)!empty($options['controls']);
+        $urlParams[] = 'pip=' . (int)!empty($options['picinpic']);
+        $urlParams[] = 'title=' . (int)!empty($options['showinfo']);
+        $urlParams[] = 'byline=' . (int)!empty($options['showinfo']);
         $urlParams[] = 'portrait=0';
 
-        return sprintf('https://player.vimeo.com/video/%s?%s', $videoId, implode('&amp;', $urlParams));
+        return sprintf('https://player.vimeo.com/video/%s?%s', $videoId, implode('&', $urlParams));
     }
 }

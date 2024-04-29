@@ -13,7 +13,6 @@ namespace TRAW\VideoVtt\Resource\Rendering;
 
 use Psr\Http\Message\ServerRequestInterface;
 use TRAW\VideoVtt\Utility\CoreUtility;
-use TYPO3\CMS\Core\Http\ApplicationType;
 use TYPO3\CMS\Core\Imaging\ImageManipulation\CropVariantCollection;
 use TYPO3\CMS\Core\Resource\FileInterface;
 use TYPO3\CMS\Core\Resource\FileReference;
