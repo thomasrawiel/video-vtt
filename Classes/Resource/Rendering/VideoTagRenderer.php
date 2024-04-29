@@ -29,10 +29,13 @@ class VideoTagRenderer extends \TYPO3\CMS\Core\Resource\Rendering\VideoTagRender
      * Render for given File(Reference) HTML output
      *
      * @param FileInterface $file
-     * @param int|string $width TYPO3 known format; examples: 220, 200m or 200c
-     * @param int|string $height TYPO3 known format; examples: 220, 200m or 200c
-     * @param array $options controls = TRUE/FALSE (default TRUE), autoplay = TRUE/FALSE (default FALSE), loop = TRUE/FALSE (default FALSE)
-     * @param bool $usedPathsRelativeToCurrentScript See $file->getPublicUrl()
+     * @param int|string    $width                            TYPO3 known format; examples: 220, 200m or 200c
+     * @param int|string    $height                           TYPO3 known format; examples: 220, 200m or 200c
+     * @param array         $options                          controls = TRUE/FALSE (default TRUE), autoplay =
+     *                                                        TRUE/FALSE (default FALSE), loop = TRUE/FALSE (default
+     *                                                        FALSE)
+     * @param bool          $usedPathsRelativeToCurrentScript See $file->getPublicUrl()
+     *
      * @return string
      */
     public function render(FileInterface $file, $width, $height, array $options = [], $usedPathsRelativeToCurrentScript = false)
@@ -41,16 +44,14 @@ class VideoTagRenderer extends \TYPO3\CMS\Core\Resource\Rendering\VideoTagRender
         $options['autoplay'] = $file->getProperty('autoplay');
         $options['muted'] = $file->getProperty('mute');
         $options['controls'] = $file->getProperty('controls');
+        $options['controlsList'] = $file->getProperty('controlslist');
+        $options['picinpic'] = $file->getProperty('picinpic');
         $options['loop'] = $file->getProperty('loop');
 
         // If autoplay isn't set manually check if $file is a FileReference take autoplay from there
-        if (!isset($options['autoplay']) && $file instanceof FileReference) {
-            $autoplay = $file->getProperty('autoplay');
-            if ($autoplay !== null) {
-                $options['autoplay'] = $autoplay;
-            }
+        if (empty($options['autoplay']) && $file instanceof FileReference) {
+            $options['autoplay'] = $file->getProperty('autoplay') ?? '0';
         }
-
         $attributes = [];
         if (isset($options['additionalAttributes']) && is_array($options['additionalAttributes'])) {
             $attributes[] = GeneralUtility::implodeAttributes($options['additionalAttributes'], true, true);
@@ -70,9 +71,35 @@ class VideoTagRenderer extends \TYPO3\CMS\Core\Resource\Rendering\VideoTagRender
         if (!isset($options['controls']) || !empty($options['controls'])) {
             $attributes[] = 'controls';
         }
+        if (isset($options['picinpic']) && $options['picinpic'] === 0) {
+            $attributes[] = 'disablePictureInPicture';
+        }
+
+        if (!empty($options['controlsList']) && $options['controlsList'] > 0) {
+            $controlsList = [
+                1 => 'nodownload',
+                2 => 'noplaybackrate',
+                4 => 'nofullscreen',
+                8 => 'noremoteplayback',
+                3 => 'nodownload noplaybackrate',
+                5 => 'nodownload nofullscreen',
+                9 => 'nodownload noremoteplayback',
+                6 => 'noplaybackrate nofullscreen',
+                10 => 'noplaybackrate noremoteplayback',
+                12 => 'nofullscreen noremoteplayback',
+                7 => 'nodownload noplaybackrate nofullscreen',
+                11 => 'nodownload noplaybackrate noremoteplayback',
+                13 => 'nodownload nofullscreen noremoteplayback',
+                14 => 'noplaybackrate nofullscreen noremoteplayback',
+                15 => 'nodownload noplaybackrate nofullscreen noremoteplayback',
+            ];
+            $attributes[] = 'controlsList="' . $controlsList[$options['controlsList']] . '"';
+        }
+
         if (!empty($options['autoplay'])) {
             $attributes[] = 'autoplay';
             $attributes[] = 'playsinline';
+            $attributes[] = 'muted';
         }
         if (!empty($options['muted'])) {
             $attributes[] = 'muted';
@@ -118,7 +145,8 @@ class VideoTagRenderer extends \TYPO3\CMS\Core\Resource\Rendering\VideoTagRender
 
     /**
      * @param FileInterface $file
-     * @param bool $usedPathsRelativeToCurrentScript
+     * @param bool          $usedPathsRelativeToCurrentScript
+     *
      * @return string
      */
     protected function getSource(FileInterface $file, bool $usedPathsRelativeToCurrentScript): string
@@ -137,6 +165,7 @@ class VideoTagRenderer extends \TYPO3\CMS\Core\Resource\Rendering\VideoTagRender
 
     /**
      * @param FileInterface $file
+     *
      * @return string
      */
     protected function getTracks(FileInterface $file): string
@@ -155,10 +184,10 @@ class VideoTagRenderer extends \TYPO3\CMS\Core\Resource\Rendering\VideoTagRender
             );
 
             foreach ($relatedFiles ?? [] as $key => $fileObject) {
-                $trackLanguage = $fileObject->getProperty('track_language') ?: '';
-                $trackType = $fileObject->getProperty('track_type') ?: 'subtitles';
-                $trackLabel = $fileObject->getProperty('track_label') ?: '';
-                $trackDefault = $fileObject->getProperty('track_default') ?: false;
+                $trackLanguage = $fileObject->getProperty('track_language') ?? '';
+                $trackType = $fileObject->getProperty('track_type') ?? 'subtitles';
+                $trackLabel = $fileObject->getProperty('track_label') ?? '';
+                $trackDefault = $fileObject->getProperty('track_default') ?? false;
                 $publicUrl = $this->getSource($fileObject, false);
 
                 if ($this->canRenderTrack($publicUrl, $trackType, $trackLanguage)) {
@@ -186,6 +215,7 @@ class VideoTagRenderer extends \TYPO3\CMS\Core\Resource\Rendering\VideoTagRender
      * @param string $publicUrl
      * @param string $trackType
      * @param string $trackLanguage
+     *
      * @return bool
      */
     protected function canRenderTrack(string $publicUrl, string $trackType, string $trackLanguage): bool

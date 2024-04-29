@@ -5,7 +5,7 @@ defined('TYPO3') or die('Access denied.');
 call_user_func(function ($_EXTKEY = 'video_vtt', $table = 'sys_file_reference') {
     \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addTCAcolumns($table, [
         'loop' => [
-            'exclude' => 1,
+            'exclude' => true,
             'label' => 'LLL:EXT:video_vtt/Resources/Private/Language/locallang_tca.xlf:sys_file_reference.loop',
             'config' => [
                 'type' => 'check',
@@ -14,7 +14,7 @@ call_user_func(function ($_EXTKEY = 'video_vtt', $table = 'sys_file_reference') 
             ],
         ],
         'mute' => [
-            'exclude' => 1,
+            'exclude' => true,
             'label' => 'LLL:EXT:video_vtt/Resources/Private/Language/locallang_tca.xlf:sys_file_reference.muted',
             'config' => [
                 'type' => 'check',
@@ -23,7 +23,7 @@ call_user_func(function ($_EXTKEY = 'video_vtt', $table = 'sys_file_reference') 
             ],
         ],
         'showinfo' => [
-            'exclude' => 1,
+            'exclude' => true,
             'label' => 'LLL:EXT:video_vtt/Resources/Private/Language/locallang_tca.xlf:sys_file_reference.showinfo',
             'config' => [
                 'type' => 'check',
@@ -32,7 +32,7 @@ call_user_func(function ($_EXTKEY = 'video_vtt', $table = 'sys_file_reference') 
             ],
         ],
         'controls' => [
-            'exclude' => 1,
+            'exclude' => true,
             'label' => 'LLL:EXT:video_vtt/Resources/Private/Language/locallang_tca.xlf:sys_file_reference.showcontrols',
             'config' => [
                 'type' => 'check',
@@ -41,13 +41,13 @@ call_user_func(function ($_EXTKEY = 'video_vtt', $table = 'sys_file_reference') 
             ],
         ],
         'track_label' => [
+            'exclude' => true,
             'displayCond' => [
                 'AND' => [
                     'FIELD:fieldname:=:tracks',
                     'FIELD:tablenames:=:sys_file_metadata',
                 ],
             ],
-            'exclude' => true,
             'label' => 'LLL:EXT:video_vtt/Resources/Private/Language/locallang_tca.xlf:sys_file_reference.track_label',
             'description' => 'LLL:EXT:video_vtt/Resources/Private/Language/locallang_tca.xlf:sys_file_reference.track_label.description',
             'config' => [
@@ -56,13 +56,13 @@ call_user_func(function ($_EXTKEY = 'video_vtt', $table = 'sys_file_reference') 
             ],
         ],
         'track_language' => [
+            'exclude' => true,
             'displayCond' => [
                 'AND' => [
                     'FIELD:fieldname:=:tracks',
                     'FIELD:tablenames:=:sys_file_metadata',
                 ],
             ],
-            'exclude' => true,
             'label' => 'LLL:EXT:video_vtt/Resources/Private/Language/locallang_tca.xlf:sys_file_reference.track_language',
             'description' => 'LLL:EXT:video_vtt/Resources/Private/Language/locallang_tca.xlf:sys_file_reference.track_language.description',
             'config' => [
@@ -72,13 +72,14 @@ call_user_func(function ($_EXTKEY = 'video_vtt', $table = 'sys_file_reference') 
             ],
         ],
         'track_type' => [
+            'exclude' => true,
             'displayCond' => [
                 'AND' => [
                     'FIELD:fieldname:=:tracks',
                     'FIELD:tablenames:=:sys_file_metadata',
                 ],
             ],
-            'exclude' => true,
+
             'label' => 'LLL:EXT:video_vtt/Resources/Private/Language/locallang_tca.xlf:sys_file_reference.track_type',
             'description' => 'LLL:EXT:video_vtt/Resources/Private/Language/locallang_tca.xlf:sys_file_reference.track_type.description',
             'config' => [
@@ -110,13 +111,13 @@ call_user_func(function ($_EXTKEY = 'video_vtt', $table = 'sys_file_reference') 
             ],
         ],
         'track_default' => [
+            'exclude' => true,
             'displayCond' => [
                 'AND' => [
                     'FIELD:fieldname:=:tracks',
                     'FIELD:tablenames:=:sys_file_metadata',
                 ],
             ],
-            'exclude' => true,
             'label' => 'LLL:EXT:video_vtt/Resources/Private/Language/locallang_tca.xlf:sys_file_reference.track_default',
             'description' => 'LLL:EXT:video_vtt/Resources/Private/Language/locallang_tca.xlf:sys_file_reference.track_default.description',
             'config' => [
@@ -124,11 +125,39 @@ call_user_func(function ($_EXTKEY = 'video_vtt', $table = 'sys_file_reference') 
                 'default' => 0,
             ],
         ],
+        'controlslist' => [
+            'exclude' => true,
+            'label' => 'LLL:EXT:video_vtt/Resources/Private/Language/locallang_tca.xlf:sys_file_reference.controlsList',
+            'displayCond' => 'FIELD:controls:REQ:TRUE',
+            'config' => [
+                'type' => 'check',
+                'renderType' => 'checkboxToggle',
+                'items' => [
+                    ['label' => 'LLL:EXT:video_vtt/Resources/Private/Language/locallang_tca.xlf:sys_file_reference.controlsList.download', 'invertStateDisplay' => true],
+                    ['label' => 'LLL:EXT:video_vtt/Resources/Private/Language/locallang_tca.xlf:sys_file_reference.controlsList.playbackrate', 'invertStateDisplay' => true],
+                    ['label' => 'LLL:EXT:video_vtt/Resources/Private/Language/locallang_tca.xlf:sys_file_reference.controlsList.fullscreen', 'invertStateDisplay' => true],
+                    ['label' => 'LLL:EXT:video_vtt/Resources/Private/Language/locallang_tca.xlf:sys_file_reference.controlsList.remoteplayback', 'invertStateDisplay' => true],
+
+                ],
+                'cols' => '3',
+                'default' => 0,
+            ],
+        ],
+        'picinpic' => [
+            'exclude' => true,
+            'label' => 'LLL:EXT:video_vtt/Resources/Private/Language/locallang_tca.xlf:sys_file_reference.picinpic',
+            'displayCond' => 'FIELD:controls:REQ:TRUE',
+            'config' => [
+                'type' => 'check',
+                'renderType' => 'checkboxToggle',
+                'default' => 0,
+            ],
+        ],
     ]);
     //changed order of fields
     $GLOBALS['TCA'][$table]['palettes']['videoOverlayPalette']['showitem']
         = 'title,description,
-        --linebreak--,autoplay,mute,loop,showinfo,controls,';
+        --linebreak--,autoplay,mute,loop,showinfo,--linebreak--,controls,--linebreak--,controlslist,picinpic';
 
     $GLOBALS['TCA'][$table]['palettes']['basicoverlayPalette']['showitem']
         = 'title,description,

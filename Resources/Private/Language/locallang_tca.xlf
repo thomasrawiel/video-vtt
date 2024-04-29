@@ -55,6 +55,25 @@
             <trans-unit id="sys_file_reference.track_default">
                 <source>Default attribute</source>
             </trans-unit>
+			<trans-unit id="sys_file_reference.controlsList">
+				<source>Controls List (Chromium Browsers)</source>
+			</trans-unit>
+			<trans-unit id="sys_file_reference.controlsList.download">
+				<source>Enable Download</source>
+			</trans-unit>
+			<trans-unit id="sys_file_reference.controlsList.playbackrate">
+				<source>Enable Playbackrate</source>
+			</trans-unit>
+			<trans-unit id="sys_file_reference.controlsList.fullscreen">
+				<source>Enable Fullscreen</source>
+			</trans-unit>
+			<trans-unit id="sys_file_reference.controlsList.remoteplayback">
+				<source>Enable Remoteplayback</source>
+			</trans-unit>
+			<trans-unit id="sys_file_reference.picinpic">
+				<source>Picture in picture</source>
+			</trans-unit>
+
         </body>
     </file>
 </xliff>
