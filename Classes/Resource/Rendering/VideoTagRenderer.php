@@ -12,12 +12,16 @@ namespace TRAW\VideoVtt\Resource\Rendering;
  */
 
 use Psr\Http\Message\ServerRequestInterface;
+use TRAW\VideoVtt\Utility\CoreUtility;
 use TYPO3\CMS\Core\Http\ApplicationType;
+use TYPO3\CMS\Core\Imaging\ImageManipulation\CropVariantCollection;
 use TYPO3\CMS\Core\Resource\FileInterface;
 use TYPO3\CMS\Core\Resource\FileReference;
 use TYPO3\CMS\Core\Resource\FileRepository;
+use TYPO3\CMS\Core\Resource\ProcessedFile;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\PathUtility;
+use TYPO3\CMS\Extbase\Service\ImageService;
 use TYPO3Fluid\Fluid\Core\ViewHelper\TagBuilder;
 
 /**
@@ -121,6 +125,11 @@ class VideoTagRenderer extends \TYPO3\CMS\Core\Resource\Rendering\VideoTagRender
             }
         }
 
+        $posterImage = $this->getPosterImage($file);
+        if (!empty($posterImage)) {
+            $attributes[] = 'poster="' . $posterImage->getPublicUrl() . '"';
+        }
+
         // Clean up duplicate attributes
         $attributes = array_unique($attributes);
 
@@ -155,7 +164,7 @@ class VideoTagRenderer extends \TYPO3\CMS\Core\Resource\Rendering\VideoTagRender
 
         // We need an absolute path for the backend
         if (($GLOBALS['TYPO3_REQUEST'] ?? null) instanceof ServerRequestInterface
-            && ApplicationType::fromRequest($GLOBALS['TYPO3_REQUEST'])->isBackend()
+            && CoreUtility::isBackend()
         ) {
             $source = PathUtility::getAbsoluteWebPath($source);
         }
@@ -229,5 +238,59 @@ class VideoTagRenderer extends \TYPO3\CMS\Core\Resource\Rendering\VideoTagRender
         }
 
         return true;
+    }
+
+    /**
+     * @param FileInterface $file
+     *
+     * @return ProcessedFile|null
+     */
+    protected function getPosterImage(FileInterface $file): ?ProcessedFile
+    {
+        $posterImage = null;
+
+        if ($file->hasProperty('poster')) {
+            $fileRepository = GeneralUtility::makeInstance(FileRepository::class);
+            $posterImage = $fileRepository->findByRelation('sys_file_reference', 'poster', $file->getUid());
+
+            //if no poster in file reference, check metadata
+            if (empty($posterImage)) {
+                $uidOfMetaData = CoreUtility::isBackend() ?
+                    $file->getMetaData()->get()['uid']
+                    : $file->getOriginalFile()->getMetaData()->get()['uid'];
+                if ($uidOfMetaData > 0) {
+                    $posterImage = $fileRepository->findByRelation('sys_file_metadata', 'poster', $uidOfMetaData);
+                }
+            }
+
+            if (!empty($posterImage) && is_array($posterImage) && is_a($posterImage[0], FileReference::class)) {
+                $posterImage = $this->getCropVariant($posterImage[0]);
+            }
+        }
+
+        return empty($posterImage) ? null : $posterImage;
+    }
+
+    /**
+     * @param        $file
+     * @param string $cropVariant
+     *
+     * @return ProcessedFile
+     */
+    protected function getCropVariant($file, string $cropVariant = 'default'): ProcessedFile
+    {
+        $cropString = $file->getProperty('crop');
+        $cropVariantCollection = CropVariantCollection::create($cropString);
+        $cropArea = $cropVariantCollection->getCropArea($cropVariant); // cropVariant
+        $processingInstructions = [
+            'crop' => $cropArea->isEmpty() ? null : $cropArea->makeAbsoluteBasedOnFile($file),
+        ];
+
+        $imageService = GeneralUtility::makeInstance(ImageService::class);
+
+        return $imageService->applyProcessingInstructions(
+            $file,
+            $processingInstructions
+        );
     }
 }

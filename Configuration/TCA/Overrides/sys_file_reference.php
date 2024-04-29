@@ -153,10 +153,38 @@ call_user_func(function ($_EXTKEY = 'video_vtt', $table = 'sys_file_reference') 
                 'default' => 0,
             ],
         ],
+        'poster' => [
+            'exclude' => 0,
+            'label' => 'LLL:EXT:video_vtt/Resources/Private/Language/locallang_tca.xlf:sys_file_reference.poster',
+            'config' => [
+                'behaviour' => [
+                    'allowLanguageSynchronization' => true,
+                ],
+                'type' => 'file',
+                'maxitems' => 1,
+                'allowed' => 'common-image-types',
+                'overrideChildTca' => [
+                    'types' => [
+                        \TYPO3\CMS\Core\Resource\AbstractFile::FILETYPE_IMAGE => [
+                            'showitem' => '
+                                    --palette--;;imageoverlayPalette,
+                                    --palette--;;filePalette',
+                        ],
+                    ],
+                    'columns' => [
+                        'link' => false,
+                        'description' => false,
+                        'alternative' => false,
+                        'title' => false,
+                    ],
+                ],
+            ],
+        ],
     ]);
     //changed order of fields
     $GLOBALS['TCA'][$table]['palettes']['videoOverlayPalette']['showitem']
         = 'title,description,
+        --linebreak--,poster,
         --linebreak--,autoplay,mute,loop,showinfo,--linebreak--,controls,--linebreak--,controlslist,picinpic';
 
     $GLOBALS['TCA'][$table]['palettes']['basicoverlayPalette']['showitem']

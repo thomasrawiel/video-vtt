@@ -13,11 +13,44 @@ call_user_func(function ($_EXTKEY = 'video_vtt', $table = 'sys_file_metadata') {
                 'allowed' => 'vtt',
             ],
         ],
+        'poster' => [
+            'exclude' => 0,
+            'label' => 'LLL:EXT:lin_template/Resources/Private/Language/locallang_db.xlf:tca.' . $table . '.poster',
+            'config' => [
+                'behaviour' => [
+                    'allowLanguageSynchronization' => true,
+                ],
+                'type' => 'file',
+                'maxitems' => 1,
+                'allowed' => 'common-image-types',
+                'overrideChildTca' => [
+                    'types' => [
+                        \TYPO3\CMS\Core\Resource\AbstractFile::FILETYPE_IMAGE => [
+                            'showitem' => '
+                                    --palette--;;imageoverlayPalette,
+                                    --palette--;;filePalette',
+                        ],
+                    ],
+                    'columns' => [
+                        'link' => false,
+                        'description' => false,
+                        'alternative' => false,
+                        'title' => false,
+                    ],
+                ],
+            ],
+        ],
     ]);
     \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addToAllTCAtypes(
         $table,
         'tracks',
         (string)\TYPO3\CMS\Core\Resource\File::FILETYPE_VIDEO,
+        'after:duration'
+    );
+    \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addToAllTCAtypes(
+        $table,
+        'poster',
+        TYPO3\CMS\Core\Resource\AbstractFile::FILETYPE_VIDEO,
         'after:duration'
     );
 });

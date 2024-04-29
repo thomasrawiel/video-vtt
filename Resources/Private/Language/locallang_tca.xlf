@@ -73,7 +73,12 @@
 			<trans-unit id="sys_file_reference.picinpic">
 				<source>Picture in picture</source>
 			</trans-unit>
-
+			<trans-unit id="sys_file_metadata.poster">
+				<source>Poster Image</source>
+			</trans-unit>
+			<trans-unit id="sys_file_reference.poster">
+				<source>Poster Image (Override Poster from Metadata)</source>
+			</trans-unit>
         </body>
     </file>
 </xliff>
