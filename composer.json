@@ -18,9 +18,6 @@
     "typo3/cms-core": "^12 || ^13",
     "typo3/cms-filemetadata": "^12 || ^13"
   },
-  "replace": {
-    "traw/video_vtt": "self.version"
-  },
   "extra": {
     "typo3/cms": {
       "extension-key": "video_vtt"
