@@ -156,6 +156,7 @@ call_user_func(function ($_EXTKEY = 'video_vtt', $table = 'sys_file_reference') 
         'poster' => [
             'exclude' => 0,
             'label' => 'LLL:EXT:video_vtt/Resources/Private/Language/locallang_tca.xlf:sys_file_reference.poster',
+            'displayCond' => 'USER:TRAW\\VideoVtt\\Resource\\DisplayCondition\\PosterDisplayCondition->displayPoster',
             'config' => [
                 'behaviour' => [
                     'allowLanguageSynchronization' => true,
