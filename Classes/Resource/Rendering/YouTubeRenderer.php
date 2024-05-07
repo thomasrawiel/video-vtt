@@ -39,21 +39,29 @@ class YouTubeRenderer extends \TYPO3\CMS\Core\Resource\Rendering\YouTubeRenderer
             'modestbranding=1',
             'playsinline=1',
             'rel=0',
-            'autoplay=' . $options['autoplay'],
-            'mute=' . $options['mute'],
             'controls=' . $options['controls'],
             'showinfo=' . $options['showinfo'],
-            'enablejsapi=1&amp;origin=' . rawurlencode(GeneralUtility::getIndpEnv('TYPO3_REQUEST_HOST')),
+            'enablejsapi=1&origin=' . rawurlencode(GeneralUtility::getIndpEnv('TYPO3_REQUEST_HOST')),
         ];
 
+        if (!empty($options['autoplay'])) {
+            $urlParams[] = 'autoplay=1';
+            // If autoplay is enabled, enforce mute=1, see https://developer.chrome.com/blog/autoplay/
+            $urlParams[] = 'mute=1';
+        }
+
+        if(!empty($options['mute']) && empty($options['autoplay'])) {
+            $urlParams[] = 'mute=1';
+        }
+
         if ($options['loop']) {
-            $urlParams[] = 'loop=1&amp;playlist=' . $videoId;
+            $urlParams[] = 'loop=1&playlist=' . rawurlencode($videoId);
         }
 
         return sprintf(
             'https://www.youtube-nocookie.com/embed/%s?%s',
-            $videoId,
-            implode('&amp;', $urlParams)
+            rawurlencode($videoId),
+            implode('&', $urlParams)
         );
     }
 }
