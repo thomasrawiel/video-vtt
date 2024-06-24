@@ -254,11 +254,12 @@ class VideoTagRenderer extends \TYPO3\CMS\Core\Resource\Rendering\VideoTagRender
 
             //if no poster in file reference, check metadata
             if (empty($posterImage)) {
-                $uidOfMetaData = CoreUtility::isBackend() ?
+                $metaData = CoreUtility::isBackend() ?
                     $file->getMetaData()->get()
                     : $file->getOriginalFile()->getMetaData()->get();
-                if (($uidOfMetaData['uid'] ?? 0) > 0) {
-                    $posterImage = $fileRepository->findByRelation('sys_file_metadata', 'poster', $uidOfMetaData);
+                $metaDataUid = $metaData['uid'] ?? 0;
+                if ($metaDataUid > 0) {
+                    $posterImage = $fileRepository->findByRelation('sys_file_metadata', 'poster', $metaDataUid);
                 }
             }
 
