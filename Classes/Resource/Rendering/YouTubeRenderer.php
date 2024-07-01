@@ -12,6 +12,7 @@ namespace TRAW\VideoVtt\Resource\Rendering;
  */
 
 use TYPO3\CMS\Core\Resource\FileInterface;
+use TYPO3\CMS\Core\Resource\FileReference;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -27,6 +28,16 @@ class YouTubeRenderer extends \TYPO3\CMS\Core\Resource\Rendering\YouTubeRenderer
     protected function createYouTubeUrl(array $options, FileInterface $file)
     {
         $videoId = $this->getVideoIdFromFile($file);
+
+        if (empty($videoId)) {
+            if ($file instanceof FileReference) {
+                $orgFile = $file->getOriginalFile();
+            } else {
+                $orgFile = $file;
+            }
+
+            throw new \Exception('Referenced file "' . $orgFile->getIdentifier() . '" not found.');
+        }
 
         $options['autoplay'] = $file->getProperty('autoplay');
         $options['loop'] = $file->getProperty('loop');

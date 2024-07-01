@@ -65,8 +65,18 @@ class VimeoRenderer extends \TYPO3\CMS\Core\Resource\Rendering\VimeoRenderer
         $videoIdRaw = $this->getVideoIdFromFile($file);
         $videoIdRaw = GeneralUtility::trimExplode('/', $videoIdRaw, true);
 
-        $videoId = $videoIdRaw[0];
+        $videoId = $videoIdRaw[0] ?? null;
         $hash = $videoIdRaw[1] ?? null;
+
+        if (empty($videoId)) {
+            if ($file instanceof FileReference) {
+                $orgFile = $file->getOriginalFile();
+            } else {
+                $orgFile = $file;
+            }
+
+            throw new \Exception('Referenced file "' . $orgFile->getIdentifier() . '" not found.');
+        }
 
         $urlParams = [];
         if (!empty($hash)) {
