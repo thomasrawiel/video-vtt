@@ -37,7 +37,7 @@ call_user_func(function ($_EXTKEY = 'video_vtt', $table = 'sys_file_reference') 
             'config' => [
                 'type' => 'check',
                 'renderType' => 'checkboxToggle',
-                'default' => 0,
+                'default' => 1,
             ],
         ],
         'track_label' => [
