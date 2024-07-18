@@ -14,6 +14,7 @@ namespace TRAW\VideoVtt\Resource\Rendering;
 use Psr\Http\Message\ServerRequestInterface;
 use TRAW\VideoVtt\Utility\CoreUtility;
 use TYPO3\CMS\Core\Imaging\ImageManipulation\CropVariantCollection;
+use TYPO3\CMS\Core\Resource\File;
 use TYPO3\CMS\Core\Resource\FileInterface;
 use TYPO3\CMS\Core\Resource\FileReference;
 use TYPO3\CMS\Core\Resource\FileRepository;
@@ -254,7 +255,7 @@ class VideoTagRenderer extends \TYPO3\CMS\Core\Resource\Rendering\VideoTagRender
 
             //if no poster in file reference, check metadata
             if (empty($posterImage)) {
-                $metaData = CoreUtility::isBackend() ?
+                $metaData = ($file instanceof File || CoreUtility::isBackend())  ?
                     $file->getMetaData()->get()
                     : $file->getOriginalFile()->getMetaData()->get();
                 $metaDataUid = $metaData['uid'] ?? 0;
