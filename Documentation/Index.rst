@@ -1,18 +1,14 @@
-.. every .rst file should include Includes.txt
-.. use correct path!
-
-.. include:: Includes.txt
-
-.. Every manual should have a start label for cross-referencing to
-.. start page. Do not remove this!
-
 .. _start:
 
 =============================================================
 Video VTT
 =============================================================
 
-.. only:: html
+:Extension key:
+   video_vtt
+
+:Package name:
+   traw/video-vtt
 
 :Version:
    |release|
@@ -21,20 +17,47 @@ Video VTT
    en
 
 :Authors:
-   Thomas Rawiel
+   |copyright| and contributors
 
-Extend TYPO3 Video functionality with text tracks and time-based data.
+:Rendered:
+    |today|
 
-**TYPO3**
+----
 
-The content of this document is related to TYPO3 CMS,
-a GNU/GPL CMS/Framework available from `typo3.org <https://typo3.org/>`_ .
+.. _what-it-does:
+
+What does it do?
+================
+
+Video VTT extends the file metadata of video files.
+You can add text tracks and time-based data. (see :ref:`WebVTT_API <webvttapi>`)
+
+Additionally, the extension extends the TYPO3 video functionality with poster images and more video controls
+
+----
+
+..  card-grid::
+    :columns: 1
+    :columns-md: 2
+    :gap: 4
+    :class: pb-4
+    :card-height: 100
+
+    ..  card:: :ref:`Editors manual <user-manual>`
+
+        Learn how to use the video controls, set up text-tracks and time-based data or add a poster image to your video
+
+    ..  card:: :ref:`Administrators manual <admin-manual>`
+
+        Install EXT:video_vtt, learn how to configure the extension for your editors
 
 **Table of Contents**
 
 .. toctree::
-   :maxdepth: 3
+   :maxdepth: 1
 
-   Introduction/Index
+   Administrator/Index
    Editor/Index
-   Sitemap
+
+
+.. _webvttapi: https://developer.mozilla.org/en-US/docs/Web/API/WebVTT_API
