@@ -12,12 +12,18 @@ namespace TRAW\VideoVtt\Resource\DisplayCondition;
  *
  * The TYPO3 project - inspiring people to share!
  */
-use TRAW\VideoVtt\Resource\Rendering\VideoTagRenderer;
-use TYPO3\CMS\Core\Resource\FileRepository;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-class PosterDisplayCondition
+/**
+ * Class PosterDisplayCondition
+ * @package TRAW\VideoVtt\Resource\DisplayCondition
+ */
+class PosterDisplayCondition extends AbstractDisplayCondition
 {
+    /**
+     * @param array $data
+     *
+     * @return bool
+     */
     public function displayPoster(array $data): bool
     {
         $record = $data['record'];
@@ -25,13 +31,7 @@ class PosterDisplayCondition
         if (isset($record['file']) || (isset($record['uid_local'][0]) && $record['uid_local'][0]['table'] === 'sys_file')) {
             $fileUid = (int)($record['file'][0] ?? $record['uid_local'][0]['uid'] ?? 0);
         }
-        if ($fileUid > 0) {
-            $fileRepository = GeneralUtility::makeInstance(FileRepository::class);
-            $videoTagRenderer = GeneralUtility::makeInstance(VideoTagRenderer::class);
-            $file = $fileRepository->findByUid($fileUid);
 
-            return in_array($file->getMimeType(), $videoTagRenderer->getPossibleMimeTypes(), true);
-        }
-        return false;
+        return $this->fieldShouldBeRendered($fileUid);
     }
 }
