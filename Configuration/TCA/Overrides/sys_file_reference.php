@@ -185,6 +185,7 @@ call_user_func(function ($_EXTKEY = 'video_vtt', $table = 'sys_file_reference') 
     //changed order of fields
     $GLOBALS['TCA'][$table]['palettes']['videoOverlayPalette']['showitem']
         = 'title,description,
+        --linebreak--,link,
         --linebreak--,poster,
         --linebreak--,autoplay,mute,loop,showinfo,--linebreak--,controls,--linebreak--,controlslist,picinpic';
 
