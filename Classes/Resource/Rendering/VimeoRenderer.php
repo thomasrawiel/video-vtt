@@ -29,10 +29,12 @@ class VimeoRenderer extends \TYPO3\CMS\Core\Resource\Rendering\VimeoRenderer
                 $options['autoplay'] = $autoplay;
             }
         }
-
+        /** @extensionScannerIgnoreLine */
         if (!isset($options['allow'])) {
+            /** @extensionScannerIgnoreLine */
             $options['allow'] = 'fullscreen';
             if (!empty($options['autoplay'])) {
+                /** @extensionScannerIgnoreLine */
                 $options['allow'] = 'autoplay; fullscreen';
             }
         }
@@ -75,7 +77,7 @@ class VimeoRenderer extends \TYPO3\CMS\Core\Resource\Rendering\VimeoRenderer
                 $orgFile = $file;
             }
 
-            throw new \Exception('Referenced file "' . $orgFile->getIdentifier() . '" not found.');
+            throw new \Exception('Referenced file "' . $orgFile->getIdentifier() . '" not found.', 6631073425);
         }
 
         $urlParams = [];

@@ -36,7 +36,7 @@ class YouTubeRenderer extends \TYPO3\CMS\Core\Resource\Rendering\YouTubeRenderer
                 $orgFile = $file;
             }
 
-            throw new \Exception('Referenced file "' . $orgFile->getIdentifier() . '" not found.');
+            throw new \Exception('Referenced file "' . $orgFile->getIdentifier() . '" not found.', 9498323370);
         }
 
         $options['autoplay'] = $file->getProperty('autoplay');
