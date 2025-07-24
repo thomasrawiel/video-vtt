@@ -7,11 +7,11 @@ $EM_CONF[$_EXTKEY] = [
     'author' => 'Thomas Rawiel',
     'author_email' => 'thomas.rawiel@gmail.com',
     'state' => 'stable',
-    'version' => '2.3.2',
+    'version' => '2.4.0',
     'constraints' => [
         'depends' => [
-            'typo3' => '12.4.0-13.4.99',
-            'filemetadata' => '12.4.0-13.4.99',
+            'typo3' => '13.4.0-13.4.99',
+            'filemetadata' => '13.4.0-13.4.99',
         ],
         'conflicts' => [],
         'suggests' => [],
