@@ -20,21 +20,13 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class YouTubeRenderer extends \TYPO3\CMS\Core\Resource\Rendering\YouTubeRenderer
 {
-    /**
-     * @param array $options
-     * @param FileInterface $file
-     * @return string
-     */
-    protected function createYouTubeUrl(array $options, FileInterface $file)
+    #[\Override]
+    protected function createYouTubeUrl(array $options, FileInterface $file): string
     {
         $videoId = $this->getVideoIdFromFile($file);
 
         if (empty($videoId)) {
-            if ($file instanceof FileReference) {
-                $orgFile = $file->getOriginalFile();
-            } else {
-                $orgFile = $file;
-            }
+            $orgFile = $file instanceof FileReference ? $file->getOriginalFile() : $file;
 
             throw new \Exception('Referenced file "' . $orgFile->getIdentifier() . '" not found.', 9498323370);
         }
@@ -61,7 +53,7 @@ class YouTubeRenderer extends \TYPO3\CMS\Core\Resource\Rendering\YouTubeRenderer
             $urlParams[] = 'mute=1';
         }
 
-        if(!empty($options['mute']) && empty($options['autoplay'])) {
+        if (!empty($options['mute']) && empty($options['autoplay'])) {
             $urlParams[] = 'mute=1';
         }
 

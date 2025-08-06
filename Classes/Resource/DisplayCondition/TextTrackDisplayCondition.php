@@ -15,15 +15,9 @@ namespace TRAW\VideoVtt\Resource\DisplayCondition;
 
 /**
  * Class TextTrackDisplayCondition
- * @package TRAW\VideoVtt\Resource\DisplayCondition
  */
 class TextTrackDisplayCondition extends AbstractDisplayCondition
 {
-    /**
-     * @param array $data
-     *
-     * @return bool
-     */
     public function displayTracksField(array $data): bool
     {
         $record = $data['record'];

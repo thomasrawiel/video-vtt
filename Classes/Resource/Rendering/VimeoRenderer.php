@@ -20,7 +20,8 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class VimeoRenderer extends \TYPO3\CMS\Core\Resource\Rendering\VimeoRenderer
 {
-    protected function collectOptions(array $options, FileInterface $file)
+    #[\Override]
+    protected function collectOptions(array $options, FileInterface $file): array
     {
         // Check for an autoplay option at the file reference itself, if not overridden yet.
         if (!isset($options['autoplay']) && $file instanceof FileReference) {
@@ -29,6 +30,7 @@ class VimeoRenderer extends \TYPO3\CMS\Core\Resource\Rendering\VimeoRenderer
                 $options['autoplay'] = $autoplay;
             }
         }
+
         /** @extensionScannerIgnoreLine */
         if (!isset($options['allow'])) {
             /** @extensionScannerIgnoreLine */
@@ -56,13 +58,8 @@ class VimeoRenderer extends \TYPO3\CMS\Core\Resource\Rendering\VimeoRenderer
         return $options;
     }
 
-    /**
-     * @param array         $options
-     * @param FileInterface $file
-     *
-     * @return string
-     */
-    protected function createVimeoUrl(array $options, FileInterface $file)
+    #[\Override]
+    protected function createVimeoUrl(array $options, FileInterface $file): string
     {
         $videoIdRaw = $this->getVideoIdFromFile($file);
         $videoIdRaw = GeneralUtility::trimExplode('/', $videoIdRaw, true);
@@ -71,11 +68,7 @@ class VimeoRenderer extends \TYPO3\CMS\Core\Resource\Rendering\VimeoRenderer
         $hash = $videoIdRaw[1] ?? null;
 
         if (empty($videoId)) {
-            if ($file instanceof FileReference) {
-                $orgFile = $file->getOriginalFile();
-            } else {
-                $orgFile = $file;
-            }
+            $orgFile = $file instanceof FileReference ? $file->getOriginalFile() : $file;
 
             throw new \Exception('Referenced file "' . $orgFile->getIdentifier() . '" not found.', 6631073425);
         }
@@ -84,19 +77,21 @@ class VimeoRenderer extends \TYPO3\CMS\Core\Resource\Rendering\VimeoRenderer
         if (!empty($hash)) {
             $urlParams[] = 'h=' . $hash;
         }
+
         if (!empty($options['autoplay'])) {
             $urlParams[] = 'autoplay=1';
             // If autoplay is enabled, enforce muted=1, see https://developer.chrome.com/blog/autoplay/
             $urlParams[] = 'muted=1';
         }
+
         if (!empty($options['loop'])) {
             $urlParams[] = 'loop=1';
         }
 
-
         if (isset($options['api']) && (int)$options['api'] === 1) {
             $urlParams[] = 'api=1';
         }
+
         if (!isset($options['no-cookie']) || !empty($options['no-cookie'])) {
             $urlParams[] = 'dnt=1';
         }

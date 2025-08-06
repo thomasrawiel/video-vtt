@@ -32,17 +32,15 @@ class VideoTagRenderer extends \TYPO3\CMS\Core\Resource\Rendering\VideoTagRender
     /**
      * Render for given File(Reference) HTML output
      *
-     * @param FileInterface $file
      * @param int|string    $width                            TYPO3 known format; examples: 220, 200m or 200c
      * @param int|string    $height                           TYPO3 known format; examples: 220, 200m or 200c
      * @param array         $options                          controls = TRUE/FALSE (default TRUE), autoplay =
      *                                                        TRUE/FALSE (default FALSE), loop = TRUE/FALSE (default
      *                                                        FALSE)
      * @param bool          $usedPathsRelativeToCurrentScript See $file->getPublicUrl()
-     *
-     * @return string
      */
-    public function render(FileInterface $file, $width, $height, array $options = [], $usedPathsRelativeToCurrentScript = false)
+    #[\Override]
+    public function render(FileInterface $file, $width, $height, array $options = [], $usedPathsRelativeToCurrentScript = false): string
     {
         //take all options from file reference
         $options['autoplay'] = $file->getProperty('autoplay');
@@ -56,25 +54,31 @@ class VideoTagRenderer extends \TYPO3\CMS\Core\Resource\Rendering\VideoTagRender
         if (empty($options['autoplay']) && $file instanceof FileReference) {
             $options['autoplay'] = $file->getProperty('autoplay') ?? '0';
         }
+
         $attributes = [];
         if (isset($options['additionalAttributes']) && is_array($options['additionalAttributes'])) {
             $attributes[] = GeneralUtility::implodeAttributes($options['additionalAttributes'], true, true);
         }
+
         if (isset($options['data']) && is_array($options['data'])) {
-            array_walk($options['data'], function (&$value, $key) {
+            array_walk($options['data'], function (&$value, $key): void {
                 $value = 'data-' . htmlspecialchars($key) . '="' . htmlspecialchars($value) . '"';
             });
             $attributes[] = implode(' ', $options['data']);
         }
+
         if ((int)$width > 0) {
             $attributes[] = 'width="' . (int)$width . '"';
         }
+
         if ((int)$height > 0) {
             $attributes[] = 'height="' . (int)$height . '"';
         }
+
         if (!isset($options['controls']) || !empty($options['controls'])) {
             $attributes[] = 'controls';
         }
+
         if (isset($options['picinpic']) && $options['picinpic'] === 0) {
             $attributes[] = 'disablePictureInPicture';
         }
@@ -105,12 +109,15 @@ class VideoTagRenderer extends \TYPO3\CMS\Core\Resource\Rendering\VideoTagRender
             $attributes[] = 'playsinline';
             $attributes[] = 'muted';
         }
+
         if (!empty($options['muted'])) {
             $attributes[] = 'muted';
         }
+
         if (!empty($options['loop'])) {
             $attributes[] = 'loop';
         }
+
         if (isset($options['additionalConfig']) && is_array($options['additionalConfig'])) {
             foreach ($options['additionalConfig'] as $key => $value) {
                 if ((bool)$value) {
@@ -121,12 +128,12 @@ class VideoTagRenderer extends \TYPO3\CMS\Core\Resource\Rendering\VideoTagRender
 
         foreach (['class', 'dir', 'id', 'lang', 'style', 'title', 'accesskey', 'tabindex', 'onclick', 'controlsList', 'preload'] as $key) {
             if (!empty($options[$key])) {
-                $attributes[] = $key . '="' . htmlspecialchars($options[$key]) . '"';
+                $attributes[] = $key . '="' . htmlspecialchars((string)$options[$key]) . '"';
             }
         }
 
         $posterImage = $this->getPosterImage($file);
-        if (!empty($posterImage)) {
+        if ($posterImage instanceof \TYPO3\CMS\Core\Resource\ProcessedFile) {
             $attributes[] = 'poster="' . $posterImage->getPublicUrl() . '"';
         }
 
@@ -135,7 +142,7 @@ class VideoTagRenderer extends \TYPO3\CMS\Core\Resource\Rendering\VideoTagRender
 
         return sprintf(
             '<video%s><source src="%s" type="%s">%s</video>',
-            empty($attributes) ? '' : ' ' . implode(' ', $attributes),
+            $attributes === [] ? '' : ' ' . implode(' ', $attributes),
             htmlspecialchars($this->getSource($file, $usedPathsRelativeToCurrentScript)),
             $file->getMimeType(),
             $this->getTracks($file)
@@ -144,39 +151,25 @@ class VideoTagRenderer extends \TYPO3\CMS\Core\Resource\Rendering\VideoTagRender
 
     /**
      * The MimeTypes are used in a DisplayCondition
-     *
-     * @return array
      */
     public function getPossibleMimeTypes(): array
     {
         return $this->possibleMimeTypes;
     }
 
-    /**
-     * @param FileInterface $file
-     * @param bool          $usedPathsRelativeToCurrentScript
-     *
-     * @return string
-     */
     protected function getSource(FileInterface $file, bool $usedPathsRelativeToCurrentScript): string
     {
         $source = (string)$file->getPublicUrl();
 
         // We need an absolute path for the backend
         if (($GLOBALS['TYPO3_REQUEST'] ?? null) instanceof ServerRequestInterface
-            && CoreUtility::isBackend()
-        ) {
-            $source = PathUtility::getAbsoluteWebPath($source);
+            && CoreUtility::isBackend()) {
+            return PathUtility::getAbsoluteWebPath($source);
         }
 
         return $source;
     }
 
-    /**
-     * @param FileInterface $file
-     *
-     * @return string
-     */
     protected function getTracks(FileInterface $file): string
     {
         $tracks = '';
@@ -184,6 +177,7 @@ class VideoTagRenderer extends \TYPO3\CMS\Core\Resource\Rendering\VideoTagRender
         if ($file instanceof FileReference) {
             $originalFile = $file->getOriginalFile();
         }
+
         if ($originalFile->getProperty('tracks') && ($originalFile->getMetaData()['uid'] ?? false)) {
             $fileRepository = GeneralUtility::makeInstance(FileRepository::class);
             $relatedFiles = $fileRepository->findByRelation(
@@ -192,7 +186,7 @@ class VideoTagRenderer extends \TYPO3\CMS\Core\Resource\Rendering\VideoTagRender
                 $originalFile->getMetaData()['uid']
             );
 
-            foreach ($relatedFiles ?? [] as $key => $fileObject) {
+            foreach ($relatedFiles ?? [] as $fileObject) {
                 $trackLanguage = $fileObject->getProperty('track_language') ?? '';
                 $trackType = $fileObject->getProperty('track_type') ?? 'subtitles';
                 $trackLabel = $fileObject->getProperty('track_label') ?? '';
@@ -206,12 +200,15 @@ class VideoTagRenderer extends \TYPO3\CMS\Core\Resource\Rendering\VideoTagRender
                     if (!empty($trackLanguage)) {
                         $trackTag->addAttribute('srclang', $trackLanguage);
                     }
+
                     if (!empty($trackLabel)) {
                         $trackTag->addAttribute('label', $trackLabel);
                     }
+
                     if ($trackDefault) {
                         $trackTag->addAttribute('default', 'default');
                     }
+
                     $tracks .= $trackTag->render();
                 }
             }
@@ -220,31 +217,15 @@ class VideoTagRenderer extends \TYPO3\CMS\Core\Resource\Rendering\VideoTagRender
         return $tracks;
     }
 
-    /**
-     * @param string $publicUrl
-     * @param string $trackType
-     * @param string $trackLanguage
-     *
-     * @return bool
-     */
     protected function canRenderTrack(string $publicUrl, string $trackType, string $trackLanguage): bool
     {
-        if (empty($publicUrl)) {
+        if ($publicUrl === '' || $publicUrl === '0') {
             return false;
         }
         //dont render subtitles without a track language
-        if ($trackType === 'subtitles' && empty($trackLanguage)) {
-            return false;
-        }
-
-        return true;
+        return !($trackType === 'subtitles' && ($trackLanguage === '' || $trackLanguage === '0'));
     }
 
-    /**
-     * @param FileInterface $file
-     *
-     * @return ProcessedFile|null
-     */
     protected function getPosterImage(FileInterface $file): ?ProcessedFile
     {
         $posterImage = null;
@@ -255,7 +236,7 @@ class VideoTagRenderer extends \TYPO3\CMS\Core\Resource\Rendering\VideoTagRender
 
             //if no poster in file reference, check metadata
             if (empty($posterImage)) {
-                $metaData = ($file instanceof File || CoreUtility::isBackend())  ?
+                $metaData = ($file instanceof File || CoreUtility::isBackend()) ?
                     $file->getMetaData()->get()
                     : $file->getOriginalFile()->getMetaData()->get();
                 $metaDataUid = $metaData['uid'] ?? 0;
@@ -264,7 +245,7 @@ class VideoTagRenderer extends \TYPO3\CMS\Core\Resource\Rendering\VideoTagRender
                 }
             }
 
-            if (!empty($posterImage) && is_array($posterImage) && is_a($posterImage[0], FileReference::class)) {
+            if (!empty($posterImage) && is_array($posterImage) && $posterImage[0] instanceof \TYPO3\CMS\Core\Resource\FileReference) {
                 $posterImage = $this->getCropVariant($posterImage[0]);
             }
         }
@@ -274,9 +255,6 @@ class VideoTagRenderer extends \TYPO3\CMS\Core\Resource\Rendering\VideoTagRender
 
     /**
      * @param        $file
-     * @param string $cropVariant
-     *
-     * @return ProcessedFile
      */
     protected function getCropVariant($file, string $cropVariant = 'default'): ProcessedFile
     {

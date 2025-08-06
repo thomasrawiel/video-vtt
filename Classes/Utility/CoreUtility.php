@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright notice
  *
@@ -32,33 +33,21 @@ namespace TRAW\VideoVtt\Utility;
  */
 class CoreUtility
 {
-    /**
-     * @return string
-     */
     public static function getTypo3Version(): string
     {
         return (new \TYPO3\CMS\Core\Information\Typo3Version())->getVersion();
     }
 
-    /**
-     * @return int
-     */
     public static function getTypo3MajorVersion(): int
     {
         return (new \TYPO3\CMS\Core\Information\Typo3Version())->getMajorVersion();
     }
 
-    /**
-     * @return bool
-     */
     public static function isFrontend(): bool
     {
         \TYPO3\CMS\Core\Http\ApplicationType::fromRequest($GLOBALS['TYPO3_REQUEST'])->isFrontend();
     }
 
-    /**
-     * @return bool
-     */
     public static function isBackend(): bool
     {
         return \TYPO3\CMS\Core\Http\ApplicationType::fromRequest($GLOBALS['TYPO3_REQUEST'])->isBackend();

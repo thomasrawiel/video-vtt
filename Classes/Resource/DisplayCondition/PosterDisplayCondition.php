@@ -15,15 +15,9 @@ namespace TRAW\VideoVtt\Resource\DisplayCondition;
 
 /**
  * Class PosterDisplayCondition
- * @package TRAW\VideoVtt\Resource\DisplayCondition
  */
 class PosterDisplayCondition extends AbstractDisplayCondition
 {
-    /**
-     * @param array $data
-     *
-     * @return bool
-     */
     public function displayPoster(array $data): bool
     {
         $record = $data['record'];

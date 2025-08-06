@@ -2,7 +2,7 @@
 
 defined('TYPO3') || die('Access denied.');
 
-call_user_func(function ($_EXTKEY = 'video_vtt', $table = 'sys_file_metadata') {
+call_user_func(function ($_EXTKEY = 'video_vtt', $table = 'sys_file_metadata'): void {
     \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addTCAcolumns($table, [
         'tracks' => [
             'exclude' => true,
