@@ -11,6 +11,7 @@ namespace TRAW\VideoVtt\Resource\Rendering;
  * The TYPO3 project - inspiring people to share!
  */
 
+use TRAW\VideoVtt\Utility\DurationUtility;
 use TYPO3\CMS\Core\Resource\FileInterface;
 use TYPO3\CMS\Core\Resource\FileReference;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -102,6 +103,25 @@ class VimeoRenderer extends \TYPO3\CMS\Core\Resource\Rendering\VimeoRenderer
         $urlParams[] = 'byline=' . (int)!empty($options['showinfo']);
         $urlParams[] = 'portrait=0';
 
-        return sprintf('https://player.vimeo.com/video/%s?%s', $videoId, implode('&', $urlParams));
+        $start = $file->getProperty('start_time');
+        $end = $file->getProperty('end_time');
+
+        $urlAnchors = [];
+        //#t=1m30s&end=3m10s
+
+        if ($start > 0) {
+            $urlAnchors[] = 't=' . DurationUtility::formatDuration($start);
+        }
+        if ($end > 0 && $end > $start) {
+            $urlAnchors[] = 'end=' . DurationUtility::formatDuration($end);
+        }
+
+        $embedUrl = sprintf('https://player.vimeo.com/video/%s?%s', $videoId, implode('&', $urlParams));
+
+        if(count($urlAnchors)) {
+            $embedUrl = $embedUrl . '#' .implode('&', $urlAnchors);
+        }
+
+        return $embedUrl;
     }
 }

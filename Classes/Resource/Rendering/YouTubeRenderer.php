@@ -61,6 +61,16 @@ class YouTubeRenderer extends \TYPO3\CMS\Core\Resource\Rendering\YouTubeRenderer
             $urlParams[] = 'loop=1&playlist=' . rawurlencode($videoId);
         }
 
+        $start = $file->getProperty('start_time');
+        $end = $file->getProperty('end_time');
+
+        if ($start > 0) {
+            $urlParams[] = 'start=' . $start;
+        }
+        if ($end > 0) {
+            $urlParams[] = 'end=' . $end;
+        }
+
         return sprintf(
             'https://www.youtube-nocookie.com/embed/%s?%s',
             rawurlencode($videoId),

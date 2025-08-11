@@ -20,11 +20,7 @@ class PosterDisplayCondition extends AbstractDisplayCondition
 {
     public function displayPoster(array $data): bool
     {
-        $record = $data['record'];
-        $fileUid = 0;
-        if (isset($record['file']) || (isset($record['uid_local'][0]) && $record['uid_local'][0]['table'] === 'sys_file')) {
-            $fileUid = (int)($record['file'][0] ?? $record['uid_local'][0]['uid'] ?? 0);
-        }
+        $fileUid = $this->getFileUid($data);
 
         return $this->fieldShouldBeRendered($fileUid);
     }

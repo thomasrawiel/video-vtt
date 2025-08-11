@@ -14,6 +14,8 @@ namespace TRAW\VideoVtt\Resource\DisplayCondition;
  */
 
 use TRAW\VideoVtt\Resource\Rendering\VideoTagRenderer;
+use TRAW\VideoVtt\Resource\Rendering\VimeoRenderer;
+use TRAW\VideoVtt\Resource\Rendering\YouTubeRenderer;
 use TYPO3\CMS\Core\Resource\FileRepository;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -22,6 +24,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class AbstractDisplayCondition
 {
+    
     /**
      * The field should be rendered if the file can be rendered with the VideoTagRenderer
      */
@@ -37,5 +40,33 @@ class AbstractDisplayCondition
         }
 
         return false;
+    }
+    
+    protected function isYoutubeVideo(int $fileUid): bool {
+        if ($fileUid > 0) {
+            $file = (GeneralUtility::makeInstance(FileRepository::class))->findByUid($fileUid);
+            return (GeneralUtility::makeInstance(YouTubeRenderer::class))->canRender($file);
+        }
+
+        return false;
+    }
+    
+    protected function isVimeoVideo(int $fileUid): bool {
+        if ($fileUid > 0) {
+            $file = (GeneralUtility::makeInstance(FileRepository::class))->findByUid($fileUid);
+            return (GeneralUtility::makeInstance(VimeoRenderer::class))->canRender($file);
+        }
+
+        return false; 
+    }
+
+    protected function getFileUid(array $data): int {
+        $record = $data['record'];
+        $fileUid = 0;
+        if (isset($record['file']) || (isset($record['uid_local'][0]) && $record['uid_local'][0]['table'] === 'sys_file')) {
+            $fileUid = (int)($record['file'][0] ?? $record['uid_local'][0]['uid'] ?? 0);
+        }
+
+        return $fileUid;
     }
 }
