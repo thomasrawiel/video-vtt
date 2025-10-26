@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<xliff version="1.0">
+    <file source-language="en" datatype="plaintext" original="EXT:video_vtt/Resources/Private/Language/locallang.xlf" date="2025-10-26T10:03:17Z"
+          product-name="video_vtt">
+        <header/>
+        <body>
+            <trans-unit id="no_video_support" resname="no_video_support">
+				<source>Your browser doesn't support HTML5 videos.</source>
+            </trans-unit>
+			<trans-unit id="video_download" resname="video_download">
+				<source>Click here to download the video.</source>
+			</trans-unit>
+        </body>
+    </file>
+</xliff>

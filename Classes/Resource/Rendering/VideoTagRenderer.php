@@ -14,6 +14,7 @@ namespace TRAW\VideoVtt\Resource\Rendering;
 use Psr\Http\Message\ServerRequestInterface;
 use TRAW\VideoVtt\Utility\CoreUtility;
 use TYPO3\CMS\Core\Imaging\ImageManipulation\CropVariantCollection;
+use TYPO3\CMS\Core\Localization\LanguageService;
 use TYPO3\CMS\Core\Resource\File;
 use TYPO3\CMS\Core\Resource\FileInterface;
 use TYPO3\CMS\Core\Resource\FileReference;
@@ -32,12 +33,12 @@ class VideoTagRenderer extends \TYPO3\CMS\Core\Resource\Rendering\VideoTagRender
     /**
      * Render for given File(Reference) HTML output
      *
-     * @param int|string    $width                            TYPO3 known format; examples: 220, 200m or 200c
-     * @param int|string    $height                           TYPO3 known format; examples: 220, 200m or 200c
-     * @param array         $options                          controls = TRUE/FALSE (default TRUE), autoplay =
+     * @param int|string $width                               TYPO3 known format; examples: 220, 200m or 200c
+     * @param int|string $height                              TYPO3 known format; examples: 220, 200m or 200c
+     * @param array      $options                             controls = TRUE/FALSE (default TRUE), autoplay =
      *                                                        TRUE/FALSE (default FALSE), loop = TRUE/FALSE (default
      *                                                        FALSE)
-     * @param bool          $usedPathsRelativeToCurrentScript See $file->getPublicUrl()
+     * @param bool       $usedPathsRelativeToCurrentScript    See $file->getPublicUrl()
      */
     #[\Override]
     public function render(FileInterface $file, $width, $height, array $options = [], $usedPathsRelativeToCurrentScript = false): string
@@ -121,7 +122,7 @@ class VideoTagRenderer extends \TYPO3\CMS\Core\Resource\Rendering\VideoTagRender
         if (isset($options['additionalConfig']) && is_array($options['additionalConfig'])) {
             foreach ($options['additionalConfig'] as $key => $value) {
                 if ((bool)$value) {
-                    $attributes[] = htmlspecialchars((string) $key);
+                    $attributes[] = htmlspecialchars((string)$key);
                 }
             }
         }
@@ -140,12 +141,21 @@ class VideoTagRenderer extends \TYPO3\CMS\Core\Resource\Rendering\VideoTagRender
         // Clean up duplicate attributes
         $attributes = array_unique($attributes);
 
+        $source = htmlspecialchars($this->getSource($file, $usedPathsRelativeToCurrentScript));
+
+        $noVideoSupport = sprintf('<p>%s <a href="%s">%s</a></p>',
+            $this->getLanguageService()->sL('LLL:EXT:video_vtt/Resources/Private/Language/locallang.xlf:no_video_support'),
+            $source,
+            $this->getLanguageService()->sL('LLL:EXT:video_vtt/Resources/Private/Language/locallang.xlf:video_download'),
+        );
+
         return sprintf(
-            '<video%s><source src="%s" type="%s">%s</video>',
-            $attributes === [] ? '' : ' ' . implode(' ', $attributes),
-            htmlspecialchars($this->getSource($file, $usedPathsRelativeToCurrentScript)),
+            '<video%s><source src="%s" type="%s">%s%s</video>',
+            $attributes !== [] ? ' ' . implode(' ', $attributes) : '',
+            $source,
             $file->getMimeType(),
-            $this->getTracks($file)
+            $this->getTracks($file),
+            $noVideoSupport
         );
     }
 
@@ -275,5 +285,10 @@ class VideoTagRenderer extends \TYPO3\CMS\Core\Resource\Rendering\VideoTagRender
             $file,
             $processingInstructions
         );
+    }
+
+    protected function getLanguageService(): LanguageService
+    {
+        return $GLOBALS['LANG'];
     }
 }
