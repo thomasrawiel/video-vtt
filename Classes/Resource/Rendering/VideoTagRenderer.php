@@ -163,7 +163,7 @@ class VideoTagRenderer extends \TYPO3\CMS\Core\Resource\Rendering\VideoTagRender
 
         // We need an absolute path for the backend
         if (($GLOBALS['TYPO3_REQUEST'] ?? null) instanceof ServerRequestInterface
-            && CoreUtility::isBackend()) {
+            && \TYPO3\CMS\Core\Http\ApplicationType::fromRequest($GLOBALS['TYPO3_REQUEST'])->isBackend()) {
             return PathUtility::getAbsoluteWebPath($source);
         }
 
