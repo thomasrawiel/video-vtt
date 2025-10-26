@@ -196,7 +196,7 @@ call_user_func(function ($_EXTKEY = 'video_vtt', $table = 'sys_file_reference'):
                 'behaviour' => [
                     'allowLanguageSynchronization' => true,
                 ],
-            ]
+            ],
         ],
         'end_time' => [
             'exclude' => true,
@@ -213,7 +213,7 @@ call_user_func(function ($_EXTKEY = 'video_vtt', $table = 'sys_file_reference'):
                 'behaviour' => [
                     'allowLanguageSynchronization' => true,
                 ],
-            ]
+            ],
         ],
     ]);
     //changed order of fields

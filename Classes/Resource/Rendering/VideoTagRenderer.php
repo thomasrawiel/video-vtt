@@ -121,7 +121,7 @@ class VideoTagRenderer extends \TYPO3\CMS\Core\Resource\Rendering\VideoTagRender
         if (isset($options['additionalConfig']) && is_array($options['additionalConfig'])) {
             foreach ($options['additionalConfig'] as $key => $value) {
                 if ((bool)$value) {
-                    $attributes[] = htmlspecialchars($key);
+                    $attributes[] = htmlspecialchars((string) $key);
                 }
             }
         }

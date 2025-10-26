@@ -24,7 +24,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class AbstractDisplayCondition
 {
-    
     /**
      * The field should be rendered if the file can be rendered with the VideoTagRenderer
      */
@@ -41,26 +40,29 @@ class AbstractDisplayCondition
 
         return false;
     }
-    
-    protected function isYoutubeVideo(int $fileUid): bool {
+
+    protected function isYoutubeVideo(int $fileUid): bool
+    {
         if ($fileUid > 0) {
             $file = (GeneralUtility::makeInstance(FileRepository::class))->findByUid($fileUid);
-            return (GeneralUtility::makeInstance(YouTubeRenderer::class))->canRender($file);
+            return GeneralUtility::makeInstance(YouTubeRenderer::class)->canRender($file);
         }
 
         return false;
     }
-    
-    protected function isVimeoVideo(int $fileUid): bool {
+
+    protected function isVimeoVideo(int $fileUid): bool
+    {
         if ($fileUid > 0) {
             $file = (GeneralUtility::makeInstance(FileRepository::class))->findByUid($fileUid);
-            return (GeneralUtility::makeInstance(VimeoRenderer::class))->canRender($file);
+            return GeneralUtility::makeInstance(VimeoRenderer::class)->canRender($file);
         }
 
-        return false; 
+        return false;
     }
 
-    protected function getFileUid(array $data): int {
+    protected function getFileUid(array $data): int
+    {
         $record = $data['record'];
         $fileUid = 0;
         if (isset($record['file']) || (isset($record['uid_local'][0]) && $record['uid_local'][0]['table'] === 'sys_file')) {

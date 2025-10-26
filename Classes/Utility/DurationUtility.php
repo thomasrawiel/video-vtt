@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace TRAW\VideoVtt\Utility;
@@ -8,7 +9,7 @@ class DurationUtility
     public static function formatDuration(int $seconds): string
     {
         if ($seconds < 0) {
-            throw new InvalidArgumentException('Seconds cannot be negative.');
+            throw new InvalidArgumentException('Seconds cannot be negative.', 6104770703);
         }
 
         $hours   = intdiv($seconds, 3600);

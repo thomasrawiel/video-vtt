@@ -118,8 +118,8 @@ class VimeoRenderer extends \TYPO3\CMS\Core\Resource\Rendering\VimeoRenderer
 
         $embedUrl = sprintf('https://player.vimeo.com/video/%s?%s', $videoId, implode('&', $urlParams));
 
-        if(count($urlAnchors)) {
-            $embedUrl = $embedUrl . '#' .implode('&', $urlAnchors);
+        if (count($urlAnchors)) {
+            $embedUrl = $embedUrl . '#' . implode('&', $urlAnchors);
         }
 
         return $embedUrl;
