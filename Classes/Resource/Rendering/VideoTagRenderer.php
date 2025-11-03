@@ -15,6 +15,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use TRAW\VideoVtt\Utility\CoreUtility;
 use TYPO3\CMS\Core\Imaging\ImageManipulation\CropVariantCollection;
 use TYPO3\CMS\Core\Localization\LanguageService;
+use TYPO3\CMS\Core\Localization\LanguageServiceFactory;
 use TYPO3\CMS\Core\Resource\File;
 use TYPO3\CMS\Core\Resource\FileInterface;
 use TYPO3\CMS\Core\Resource\FileReference;
@@ -30,6 +31,7 @@ use TYPO3Fluid\Fluid\Core\ViewHelper\TagBuilder;
  */
 class VideoTagRenderer extends \TYPO3\CMS\Core\Resource\Rendering\VideoTagRenderer
 {
+
     /**
      * Render for given File(Reference) HTML output
      *
@@ -144,9 +146,9 @@ class VideoTagRenderer extends \TYPO3\CMS\Core\Resource\Rendering\VideoTagRender
         $source = htmlspecialchars($this->getSource($file, $usedPathsRelativeToCurrentScript));
 
         $noVideoSupport = sprintf('<p>%s <a href="%s">%s</a></p>',
-            $this->getLanguageService()->sL('LLL:EXT:video_vtt/Resources/Private/Language/locallang.xlf:no_video_support'),
+            self::translate('LLL:EXT:video_vtt/Resources/Private/Language/locallang.xlf:no_video_support'),
             $source,
-            $this->getLanguageService()->sL('LLL:EXT:video_vtt/Resources/Private/Language/locallang.xlf:video_download'),
+            self::translate('LLL:EXT:video_vtt/Resources/Private/Language/locallang.xlf:video_download'),
         );
 
         return sprintf(
@@ -287,8 +289,18 @@ class VideoTagRenderer extends \TYPO3\CMS\Core\Resource\Rendering\VideoTagRender
         );
     }
 
-    protected function getLanguageService(): LanguageService
+    private static function translate(string $lll): string
     {
-        return $GLOBALS['LANG'];
+        $languageServiceFactory = GeneralUtility::makeInstance(
+            LanguageServiceFactory::class
+        );
+        // As we are in a static context we cannot get the current request in
+        // another way this usually points to general flaws in your software-design
+        $request = $GLOBALS['TYPO3_REQUEST'];
+        $languageService = $languageServiceFactory->createFromSiteLanguage(
+            $request->getAttribute('language')
+            ?? $request->getAttribute('site')->getDefaultLanguage()
+        );
+        return $languageService->sL($lll);
     }
 }
