@@ -21,6 +21,17 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 class YouTubeRenderer extends \TYPO3\CMS\Core\Resource\Rendering\YouTubeRenderer
 {
     #[\Override]
+    protected function collectIframeAttributes($width, $height, array $options)
+    {
+        $attributes = parent::collectIframeAttributes($width, $height, $options);
+
+        //fix for youtube error 153
+        $attributes['referrerpolicy'] = 'strict-origin-when-cross-origin';
+
+        return $attributes;
+    }
+
+    #[\Override]
     protected function createYouTubeUrl(array $options, FileInterface $file): string
     {
         $videoId = $this->getVideoIdFromFile($file);

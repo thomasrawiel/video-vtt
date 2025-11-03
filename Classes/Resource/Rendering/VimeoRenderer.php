@@ -22,6 +22,16 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 class VimeoRenderer extends \TYPO3\CMS\Core\Resource\Rendering\VimeoRenderer
 {
     #[\Override]
+    protected function collectIframeAttributes($width, $height, array $options)
+    {
+        $attributes = parent::collectIframeAttributes($width, $height, $options);
+
+        $attributes['referrerpolicy'] = 'strict-origin-when-cross-origin';
+
+        return $attributes;
+    }
+
+    #[\Override]
     protected function collectOptions(array $options, FileInterface $file): array
     {
         // Check for an autoplay option at the file reference itself, if not overridden yet.
