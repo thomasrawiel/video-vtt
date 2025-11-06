@@ -21,10 +21,15 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class VimeoRenderer extends \TYPO3\CMS\Core\Resource\Rendering\VimeoRenderer
 {
+    public function getPriority(): int
+    {
+        return 7;
+    }
+
     #[\Override]
     protected function collectIframeAttributes($width, $height, array $options)
     {
-        $attributes = parent::collectIframeAttributes($width, $height, $options);
+        $attributes = parent::collectIframeAttributes(...func_get_args());
 
         $attributes['referrerpolicy'] = 'strict-origin-when-cross-origin';
 
@@ -133,5 +138,25 @@ class VimeoRenderer extends \TYPO3\CMS\Core\Resource\Rendering\VimeoRenderer
         }
 
         return $embedUrl;
+    }
+
+    /**
+     * Render for given File(Reference) html output
+     *
+     * @param FileInterface $file
+     * @param int|string    $width  TYPO3 known format; examples: 220, 200m or 200c
+     * @param int|string    $height TYPO3 known format; examples: 220, 200m or 200c
+     * @param array         $options
+     *
+     * @return string
+     */
+    public function render(FileInterface $file, $width, $height, array $options = []): string
+    {
+        if (($options['returnUrl'] ?? false) === true) {
+            $options = $this->collectOptions($options, $file);
+            $src = $this->createVimeoUrl($options, $file);
+            return htmlspecialchars($src, ENT_QUOTES | ENT_HTML5);
+        }
+        return parent::render(...func_get_args());
     }
 }

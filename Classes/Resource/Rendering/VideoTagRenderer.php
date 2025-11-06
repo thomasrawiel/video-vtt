@@ -31,6 +31,10 @@ use TYPO3Fluid\Fluid\Core\ViewHelper\TagBuilder;
  */
 class VideoTagRenderer extends \TYPO3\CMS\Core\Resource\Rendering\VideoTagRenderer
 {
+    public function getPriority(): int
+    {
+        return 7;
+    }
 
     /**
      * Render for given File(Reference) HTML output
