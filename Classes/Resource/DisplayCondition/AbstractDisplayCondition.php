@@ -41,7 +41,17 @@ class AbstractDisplayCondition
         return false;
     }
 
-    protected function isYoutubeVideo(int $fileUid): bool
+    public function isLocalVideo(int $fileUid): bool
+    {
+        if ($fileUid > 0) {
+            $file = (GeneralUtility::makeInstance(FileRepository::class))->findByUid($fileUid);
+            return GeneralUtility::makeInstance(VideoTagRenderer::class)->canRender($file);
+        }
+
+        return false;
+    }
+
+    public function isYoutubeVideo(int $fileUid): bool
     {
         if ($fileUid > 0) {
             $file = (GeneralUtility::makeInstance(FileRepository::class))->findByUid($fileUid);
@@ -51,7 +61,7 @@ class AbstractDisplayCondition
         return false;
     }
 
-    protected function isVimeoVideo(int $fileUid): bool
+    public function isVimeoVideo(int $fileUid): bool
     {
         if ($fileUid > 0) {
             $file = (GeneralUtility::makeInstance(FileRepository::class))->findByUid($fileUid);

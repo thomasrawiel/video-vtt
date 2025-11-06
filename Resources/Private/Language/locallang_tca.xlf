@@ -56,7 +56,7 @@
                 <source>Default attribute</source>
             </trans-unit>
 			<trans-unit id="sys_file_reference.controlsList">
-				<source>Controls List (Chromium Browsers)</source>
+				<source>Controls List</source>
 			</trans-unit>
 			<trans-unit id="sys_file_reference.controlsList.download">
 				<source>Enable Download</source>

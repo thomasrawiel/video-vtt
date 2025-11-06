@@ -132,13 +132,8 @@ call_user_func(function ($_EXTKEY = 'video_vtt', $table = 'sys_file_reference'):
             'config' => [
                 'type' => 'check',
                 'renderType' => 'checkboxToggle',
-                'items' => [
-                    ['label' => 'LLL:EXT:video_vtt/Resources/Private/Language/locallang_tca.xlf:sys_file_reference.controlsList.download', 'invertStateDisplay' => true],
-                    ['label' => 'LLL:EXT:video_vtt/Resources/Private/Language/locallang_tca.xlf:sys_file_reference.controlsList.playbackrate', 'invertStateDisplay' => true],
-                    ['label' => 'LLL:EXT:video_vtt/Resources/Private/Language/locallang_tca.xlf:sys_file_reference.controlsList.fullscreen', 'invertStateDisplay' => true],
-                    ['label' => 'LLL:EXT:video_vtt/Resources/Private/Language/locallang_tca.xlf:sys_file_reference.controlsList.remoteplayback', 'invertStateDisplay' => true],
-
-                ],
+                'items' => [],
+                'itemsProcFunc' => \TRAW\VideoVtt\FormEngine\ControlsList::class . '->itemsProcFunc',
                 'cols' => '3',
                 'default' => 0,
             ],
@@ -146,7 +141,7 @@ call_user_func(function ($_EXTKEY = 'video_vtt', $table = 'sys_file_reference'):
         'picinpic' => [
             'exclude' => true,
             'label' => 'LLL:EXT:video_vtt/Resources/Private/Language/locallang_tca.xlf:sys_file_reference.picinpic',
-            'displayCond' => 'FIELD:controls:REQ:TRUE',
+            'displayCond' => 'USER:TRAW\\VideoVtt\\Resource\\DisplayCondition\\PicInPicDisplayCondition->displayPicInPic',
             'config' => [
                 'type' => 'check',
                 'renderType' => 'checkboxToggle',
