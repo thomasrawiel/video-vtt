@@ -33,6 +33,18 @@ class VimeoRenderer extends \TYPO3\CMS\Core\Resource\Rendering\VimeoRenderer
 
         $attributes['referrerpolicy'] = 'strict-origin-when-cross-origin';
 
+        if ($options['file']->getProperty('controlslist') === 1) {
+            unset($attributes['allowfullscreen']);
+            if (!empty($attributes['allow'])) {
+                $values = preg_split('/[\s;]+/', $attributes['allow']);
+                $values = array_filter($values, static fn(string $v): bool => strtolower($v) !== 'fullscreen');
+                $attributes['allow'] = implode('; ', $values);
+                if ($attributes['allow'] === '') {
+                    unset($attributes['allow']);
+                }
+            }
+        }
+
         return $attributes;
     }
 

@@ -33,6 +33,18 @@ class YouTubeRenderer extends \TYPO3\CMS\Core\Resource\Rendering\YouTubeRenderer
         //fix for youtube error 153
         $attributes['referrerpolicy'] = 'strict-origin-when-cross-origin';
 
+        if ($options['file']->getProperty('controlslist') === 1) {
+            unset($attributes['allowfullscreen']);
+            if (!empty($attributes['allow'])) {
+                $values = preg_split('/[\s;]+/', $attributes['allow']);
+                $values = array_filter($values, static fn(string $v): bool => strtolower($v) !== 'fullscreen');
+                $attributes['allow'] = implode('; ', $values);
+                if ($attributes['allow'] === '') {
+                    unset($attributes['allow']);
+                }
+            }
+        }
+
         return $attributes;
     }
 
@@ -53,6 +65,7 @@ class YouTubeRenderer extends \TYPO3\CMS\Core\Resource\Rendering\YouTubeRenderer
         $options['controls'] = $file->getProperty('controls');
         $options['showinfo'] = $file->getProperty('showinfo');
         $options['lang'] = $file->getProperty('lang');
+        $options['controlsList'] = $file->getProperty('controlslist');
 
         $urlParams = [
             'autohide=1',
@@ -94,6 +107,10 @@ class YouTubeRenderer extends \TYPO3\CMS\Core\Resource\Rendering\YouTubeRenderer
             $urlParams[] = 'cc_lang_pref=' . $options['lang'];
         }
 
+        if (isset($options['controlsList'])) {
+            $urlParams[] = 'fs=' . ((int)(!$options['controlsList']));
+        }
+
         return sprintf(
             'https://www.youtube-nocookie.com/embed/%s?%s',
             rawurlencode($videoId),
@@ -101,13 +118,19 @@ class YouTubeRenderer extends \TYPO3\CMS\Core\Resource\Rendering\YouTubeRenderer
         );
     }
 
+    private function getControlsListAttributes(FileInterface $file): array
+    {
+
+    }
+
     /**
      * Render for given File(Reference) html output
      *
      * @param FileInterface $file
-     * @param int|string $width TYPO3 known format; examples: 220, 200m or 200c
-     * @param int|string $height TYPO3 known format; examples: 220, 200m or 200c
-     * @param array $options
+     * @param int|string    $width  TYPO3 known format; examples: 220, 200m or 200c
+     * @param int|string    $height TYPO3 known format; examples: 220, 200m or 200c
+     * @param array         $options
+     *
      * @return string
      */
     #[\Override]
