@@ -17,8 +17,10 @@ CREATE TABLE sys_file_reference
 
 	`poster`         int(11) UNSIGNED DEFAULT '0'  NOT NULL,
 
-	`start_time` int(11) UNSIGNED DEFAULT '0' NOT NULL,
-	`end_time` int(11) UNSIGNED DEFAULT '0' NOT NULL
+	`start_time`     int(11) UNSIGNED DEFAULT '0'  NOT NULL,
+	`end_time`       int(11) UNSIGNED DEFAULT '0'  NOT NULL,
+
+	`lang`           varchar(3)       DEFAULT ''   NOT NULL
 );
 #
 # Table structure for table 'sys_file_metadata'

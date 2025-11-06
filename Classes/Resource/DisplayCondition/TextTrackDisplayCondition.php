@@ -28,4 +28,10 @@ class TextTrackDisplayCondition extends AbstractDisplayCondition
 
         return $this->fieldShouldBeRendered($fileUid);
     }
+    
+    public function displayCaptionLanguageField(array $data): bool {
+        $fileUid = $this->getFileUid($data);
+
+        return $this->isYoutubeVideo($fileUid);
+    }
 }

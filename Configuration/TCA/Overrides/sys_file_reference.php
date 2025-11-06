@@ -183,7 +183,7 @@ call_user_func(function ($_EXTKEY = 'video_vtt', $table = 'sys_file_reference'):
         ],
         'start_time' => [
             'exclude' => true,
-            'label' => 'Start video at',
+            'label' => 'LLL:EXT:video_vtt/Resources/Private/Language/locallang_tca.xlf:sys_file_reference.start_time',
             'displayCond' => 'USER:TRAW\\VideoVtt\\Resource\\DisplayCondition\\TimeDisplayCondition->displayStartField',
             'config' => [
                 'type' => 'number',
@@ -192,7 +192,7 @@ call_user_func(function ($_EXTKEY = 'video_vtt', $table = 'sys_file_reference'):
                     'lower' => 0,
                 ],
                 'default' => 0,
-                'size' => '3',
+                'size' => '4',
                 'behaviour' => [
                     'allowLanguageSynchronization' => true,
                 ],
@@ -200,7 +200,7 @@ call_user_func(function ($_EXTKEY = 'video_vtt', $table = 'sys_file_reference'):
         ],
         'end_time' => [
             'exclude' => true,
-            'label' => 'End video at',
+            'label' => 'LLL:EXT:video_vtt/Resources/Private/Language/locallang_tca.xlf:sys_file_reference.end_time',
             'displayCond' => 'USER:TRAW\\VideoVtt\\Resource\\DisplayCondition\\TimeDisplayCondition->displayEndField',
             'config' => [
                 'type' => 'number',
@@ -209,9 +209,22 @@ call_user_func(function ($_EXTKEY = 'video_vtt', $table = 'sys_file_reference'):
                     'lower' => 0,
                 ],
                 'default' => 0,
-                'size' => '3',
+                'size' => '4',
                 'behaviour' => [
                     'allowLanguageSynchronization' => true,
+                ],
+            ],
+        ],
+        'lang' => [
+            'exclude' => true,
+            'label' => 'LLL:EXT:video_vtt/Resources/Private/Language/locallang_tca.xlf:sys_file_reference.lang',
+            'displayCond' => 'USER:TRAW\\VideoVtt\\Resource\\DisplayCondition\\TextTrackDisplayCondition->displayCaptionLanguageField',
+            'config' => [
+                'type' => 'select',
+                'renderType' => 'selectSingle',
+                'itemsProcFunc' => \TRAW\VideoVtt\Utility\SiteLanguageUtility::class . '->getIsoTwoLetterCodes',
+                'items' => [
+                    ['label' => 'LLL:EXT:video_vtt/Resources/Private/Language/locallang_tca.xlf:sys_file_reference.lang.none', 'value' => ''],
                 ],
             ],
         ],
@@ -220,9 +233,10 @@ call_user_func(function ($_EXTKEY = 'video_vtt', $table = 'sys_file_reference'):
     $GLOBALS['TCA'][$table]['palettes']['videoOverlayPalette']['showitem']
         = 'title,description,
         --linebreak--,link,
-        --linebreak--,start_time,end_time,
         --linebreak--,poster,
-        --linebreak--,autoplay,mute,loop,showinfo,--linebreak--,controls,--linebreak--,controlslist,picinpic';
+        --linebreak--,autoplay,mute,loop,lang,
+        --linebreak--,showinfo,controls,start_time,end_time,
+        --linebreak--,controlslist,picinpic';
 
     $GLOBALS['TCA'][$table]['palettes']['basicoverlayPalette']['showitem']
         = 'title,description,

@@ -79,6 +79,18 @@
 			<trans-unit id="sys_file_reference.poster">
 				<source>Poster Image (Override Poster from Metadata)</source>
 			</trans-unit>
+			<trans-unit id="sys_file_reference.start_time">
+				<source>Start video at</source>
+			</trans-unit>
+			<trans-unit id="sys_file_reference.end_time">
+				<source>End video at</source>
+			</trans-unit>
+			<trans-unit id="sys_file_reference.lang">
+				<source>Video subtitles language</source>
+			</trans-unit>
+			<trans-unit id="sys_file_reference.lang.none">
+				<source>Default (none)</source>
+			</trans-unit>
         </body>
     </file>
 </xliff>
