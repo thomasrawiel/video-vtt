@@ -1,9 +1,7 @@
 .. _configuration:
 
-
-=============
 Configuration
-=============
+===
 
 After installation, no additional configuration is needed.
 

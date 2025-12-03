@@ -4,6 +4,8 @@
 Editors Manual
 ===========
 
+This chapter describes how to manage Text-tracks and time based data, as well as how to set video controls.
+
 .. toctree::
    :maxdepth: 1
    :titlesonly:

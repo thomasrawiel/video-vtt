@@ -1,22 +1,22 @@
 .. _poster-image:
 
 Poster Image
-==========================
+===
 
-For local videos, e.g. mp4 you can add a poster image that is added to the video.
+For self-hosted videos, e.g. mp4 you can add a poster image that is added to the video.
 
-This can either be done in the metadata of the video or in the file reference of the content element where the video is referenced.
+You can set a poster image either in the video's metadata or in the file reference of the content element where the video is used.
 
 .. tip::
-   When you want to reference the video in multiple places on your website, it is recommended to :ref:`add the poster image to the video's metadata. <poster-image-metadata>` Then you only have to add it once.
+   When referencing the same video in multiple places on your website, it is recommended to :ref:`add the poster image to the video's metadata <poster-image-metadata>`. This way, you only need to add it once.
 
-   A :ref:`poster image in the file reference <poster-image-reference>` takes precedence of the metadate poster image.
+   A :ref:`poster image in the file reference <poster-image-reference>` takes precedence over the metadata poster image.
    You can use that when you want to have different poster images for the same video.
 
 .. _poster-image-metadata:
 
 Add poster image in file metadata
-===============
+---
 
 Switch to the module :guilabel:`File > Filelist`.
 
@@ -24,7 +24,7 @@ Select the video where you want to add the poster image and edit the metadata of
 
 .. figure:: ../Images/PosterImage/FilelistEditMetadata.jpg
    :class: with-shadow
-   :alt: Edit the files metadata
+   :alt: Edit video metadata
    :width: 600px
 
    Click the pencil button to edit the video's metadata
@@ -48,8 +48,8 @@ Switch to the :guilabel:`Video` tab and add or upload an image for the `Poster i
 
 .. _poster-image-reference:
 
-Add poser image in file references
-===============
+Add poster image in file references
+---
 
 For example in a textmedia element.
 

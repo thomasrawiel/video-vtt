@@ -1,9 +1,9 @@
 .. _installation:
 
 Installation
-============
+===
 
-The extension needs to be installed as any other extension of TYPO3 CMS. Get the
+The extension needs to be installed like any other extension of TYPO3 CMS. Get the
 extension by one of the following methods:
 
 #. **Use composer**: Run
