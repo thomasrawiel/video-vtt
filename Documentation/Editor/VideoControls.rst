@@ -35,3 +35,9 @@ List of available video controls
 :Controls List (Chromium Browsers): Additional controls available for chromium browsers (Google Chrome, MS Edge, etc.) - available if **Show Controls** is enabled
 
 :Picture in picture: Add picture in picture control (Chromium browsers)
+
+:Start video at: Begin playback at a specific point in the video instead of starting from the very beginning. Enter the time in seconds.
+
+:End video at: Stop playback at a specific point in the video rather than playing until the end. Enter the time in seconds.
+
+:Video subtitles language: Select the language for the YouTube subtitles. Only languages available for the current video will be applied. When set, subtitles are automatically loaded and displayed in the chosen language.
