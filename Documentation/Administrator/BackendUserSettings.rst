@@ -63,4 +63,4 @@ In the `Allowed excludefields` section of the same group
    See :ref:`Backend user permissions <permissions>` for more information.
 
 
-.. _permissions: https://docs.typo3.org/m/typo3/tutorial-getting-started/main/en-us/UserManagement/GroupPermissions/Index.html
+.. _permissions: https://docs.typo3.org/permalink/t3coreapi:setting-up-user-permissions
