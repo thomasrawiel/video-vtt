@@ -5,7 +5,7 @@
         <header/>
         <body>
             <trans-unit id="sys_file_reference.loop">
-                <source>Loop Video</source>
+                <source>Loop Video/ Audio</source>
             </trans-unit>
             <trans-unit id="sys_file_reference.muted">
                 <source>Muted</source>

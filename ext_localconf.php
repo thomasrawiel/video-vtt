@@ -13,6 +13,9 @@ call_user_func(function (): void {
     $rendererRegistry->registerRendererClass(
         TRAW\VideoVtt\Resource\Rendering\VideoTagRenderer::class
     );
+    $rendererRegistry->registerRendererClass(
+        \TRAW\VideoVtt\Resource\Rendering\AudioTagRenderer::class
+    );
     if (isset($GLOBALS['TYPO3_CONF_VARS']['SYS']['textfile_ext'])) {
         $txt = array_filter(array_map('trim', explode(',', (string)$GLOBALS['TYPO3_CONF_VARS']['SYS']['textfile_ext'])));
         $txt[] = 'vtt';

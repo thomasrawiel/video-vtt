@@ -43,7 +43,6 @@ call_user_func(function ($_EXTKEY = 'video_vtt', $table = 'sys_file_metadata'): 
                     'columns' => [
                         'link' => false,
                         'description' => false,
-                        'alternative' => false,
                         'title' => false,
                     ],
                 ],
@@ -59,7 +58,7 @@ call_user_func(function ($_EXTKEY = 'video_vtt', $table = 'sys_file_metadata'): 
     \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addToAllTCAtypes(
         $table,
         'poster',
-        \TYPO3\CMS\Core\Resource\FileType::VIDEO->value,
+        \TYPO3\CMS\Core\Resource\FileType::VIDEO->value.','.\TYPO3\CMS\Core\Resource\FileType::AUDIO->value,
         'after:duration'
     );
 });

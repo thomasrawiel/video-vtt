@@ -170,7 +170,6 @@ call_user_func(function ($_EXTKEY = 'video_vtt', $table = 'sys_file_reference'):
                     'columns' => [
                         'link' => false,
                         'description' => false,
-                        'alternative' => false,
                         'title' => false,
                     ],
                 ],
@@ -232,6 +231,12 @@ call_user_func(function ($_EXTKEY = 'video_vtt', $table = 'sys_file_reference'):
         --linebreak--,autoplay,mute,loop,lang,
         --linebreak--,showinfo,controls,start_time,end_time,
         --linebreak--,controlslist,picinpic';
+
+    $GLOBALS['TCA'][$table]['palettes']['audioOverlayPalette']['showitem']
+        = 'title,description,
+         --linebreak--,poster,
+         --linebreak--,autoplay,mute,loop,
+         --linebreak--,controls';
 
     $GLOBALS['TCA'][$table]['palettes']['basicoverlayPalette']['showitem']
         = 'title,description,
