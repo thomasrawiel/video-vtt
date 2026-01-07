@@ -22,6 +22,6 @@ class PosterDisplayCondition extends AbstractDisplayCondition
     {
         $fileUid = $this->getFileUid($data);
 
-        return $this->fieldShouldBeRendered($fileUid);
+        return $this->isLocalVideo($fileUid);
     }
 }

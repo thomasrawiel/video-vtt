@@ -13,6 +13,7 @@ namespace TRAW\VideoVtt\Resource\DisplayCondition;
  * The TYPO3 project - inspiring people to share!
  */
 
+use TRAW\VideoVtt\Resource\Rendering\AudioTagRenderer;
 use TRAW\VideoVtt\Resource\Rendering\VideoTagRenderer;
 use TRAW\VideoVtt\Resource\Rendering\VimeoRenderer;
 use TRAW\VideoVtt\Resource\Rendering\YouTubeRenderer;
@@ -24,28 +25,21 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class AbstractDisplayCondition
 {
-    /**
-     * The field should be rendered if the file can be rendered with the VideoTagRenderer
-     */
-    protected function fieldShouldBeRendered(int $fileUid): bool
-    {
-        if ($fileUid > 0) {
-            $file = (GeneralUtility::makeInstance(FileRepository::class))->findByUid($fileUid);
-            return in_array(
-                $file->getMimeType(),
-                (GeneralUtility::makeInstance(VideoTagRenderer::class))->getPossibleMimeTypes(),
-                true
-            );
-        }
-
-        return false;
-    }
-
     public function isLocalVideo(int $fileUid): bool
     {
         if ($fileUid > 0) {
             $file = (GeneralUtility::makeInstance(FileRepository::class))->findByUid($fileUid);
             return GeneralUtility::makeInstance(VideoTagRenderer::class)->canRender($file);
+        }
+
+        return false;
+    }
+
+    public function isLocalAudio(int $fileUid): bool
+    {
+        if ($fileUid > 0) {
+            $file = (GeneralUtility::makeInstance(FileRepository::class))->findByUid($fileUid);
+            return GeneralUtility::makeInstance(AudioTagRenderer::class)->canRender($file);
         }
 
         return false;

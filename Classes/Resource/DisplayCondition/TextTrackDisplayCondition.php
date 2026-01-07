@@ -20,16 +20,13 @@ class TextTrackDisplayCondition extends AbstractDisplayCondition
 {
     public function displayTracksField(array $data): bool
     {
-        $record = $data['record'];
-        $fileUid = 0;
-        if (isset($record['file'])) {
-            $fileUid = (int)$record['file'][0];
-        }
+        $fileUid = $this->getFileUid($data);
 
-        return $this->fieldShouldBeRendered($fileUid);
+        return $this->isLocalVideo($fileUid);
     }
-    
-    public function displayCaptionLanguageField(array $data): bool {
+
+    public function displayCaptionLanguageField(array $data): bool
+    {
         $fileUid = $this->getFileUid($data);
 
         return $this->isYoutubeVideo($fileUid);
