@@ -83,6 +83,13 @@ class VimeoRenderer extends \TYPO3\CMS\Core\Resource\Rendering\VimeoRenderer
             }
         }
 
+        if (!isset($options['loop'])) {
+            $loop = $file->getProperty('loop');
+            if ($loop !== null) {
+                $options['loop'] = $loop;
+            }
+        }
+
         return $options;
     }
 
