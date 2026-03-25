@@ -20,7 +20,7 @@ class PosterImageUtility
 
         if ($file->hasProperty('poster')) {
             $fileRepository = GeneralUtility::makeInstance(FileRepository::class);
-            $posterImage = $fileRepository->findByRelation('sys_file_reference', 'poster', $file->getUid());
+            $posterImage = $fileRepository->findByRelation('sys_file_reference', 'poster', $file->getProperty('uid'));
 
             //if no poster in file reference, check metadata
             if (empty($posterImage)) {
@@ -37,7 +37,7 @@ class PosterImageUtility
                 }
             }
 
-            if (($posterImage[0] ?? null) instanceof \TYPO3\CMS\Core\Resource\FileReference) {
+            if (($posterImage[0] ?? null) instanceof FileReference) {
                 $posterImage = $returnProcessedImage
                     ? self::getCropVariant($posterImage[0])
                     : $posterImage[0];

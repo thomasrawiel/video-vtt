@@ -190,6 +190,7 @@ class VideoTagRenderer extends \TYPO3\CMS\Core\Resource\Rendering\VideoTagRender
     protected function getTracks(FileInterface $file): string
     {
         $tracks = '';
+        /** @var File $originalFile */
         $originalFile = $file;
         if ($file instanceof FileReference) {
             $originalFile = $file->getOriginalFile();
@@ -203,7 +204,7 @@ class VideoTagRenderer extends \TYPO3\CMS\Core\Resource\Rendering\VideoTagRender
                 $originalFile->getMetaData()['uid']
             );
 
-            foreach ($relatedFiles ?? [] as $fileObject) {
+            foreach ($relatedFiles as $fileObject) {
                 $trackLanguage = $fileObject->getProperty('track_language') ?? '';
                 $trackType = $fileObject->getProperty('track_type') ?? 'subtitles';
                 $trackLabel = $fileObject->getProperty('track_label') ?? '';

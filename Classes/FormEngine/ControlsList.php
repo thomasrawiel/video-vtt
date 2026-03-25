@@ -14,7 +14,7 @@ class ControlsList
         $this->displayCondition = new ControlsListDisplayCondition();
     }
 
-    public function itemsProcFunc(&$params): void
+    public function itemsProcFunc(array &$params): void
     {
         if(($params['table'] ?? '') !== 'sys_file_reference') {
             return;

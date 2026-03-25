@@ -118,11 +118,6 @@ class YouTubeRenderer extends \TYPO3\CMS\Core\Resource\Rendering\YouTubeRenderer
         );
     }
 
-    private function getControlsListAttributes(FileInterface $file): array
-    {
-
-    }
-
     /**
      * Render for given File(Reference) html output
      *

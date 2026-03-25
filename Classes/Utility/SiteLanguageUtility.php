@@ -17,7 +17,7 @@ class SiteLanguageUtility
      *
      * @return void
      */
-    public static function getIsoTwoLetterCodes(array &$configuration)
+    public static function getIsoTwoLetterCodes(array &$configuration): void
     {
         if (count(self::$languages)) {
             $configuration['items'] = array_merge($configuration['items'], self::$languages);

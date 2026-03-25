@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace TRAW\VideoVtt\Utility;
 
+use InvalidArgumentException;
+
 class DurationUtility
 {
     public static function formatDuration(int $seconds): string
