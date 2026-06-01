@@ -90,7 +90,7 @@ class AudioTagRenderer extends \TYPO3\CMS\Core\Resource\Rendering\AudioTagRender
             }
         }
 
-        $source = htmlspecialchars($this->getSource($file, $usedPathsRelativeToCurrentScript));
+        $source = htmlspecialchars($this->getSource($file));
 
         $start = (int)$file->getProperty('start_time');
         if ($start < 0) {
