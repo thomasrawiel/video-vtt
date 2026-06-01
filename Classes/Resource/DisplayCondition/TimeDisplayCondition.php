@@ -10,13 +10,13 @@ class TimeDisplayCondition extends AbstractDisplayCondition
     {
         $fileUid = $this->getFileUid($data);
 
-        return $this->isYoutubeVideo($fileUid) || $this->isVimeoVideo($fileUid);
+        return $this->isYoutubeVideo($fileUid) || $this->isVimeoVideo($fileUid) || $this->isLocalVideo($fileUid) || $this->isLocalAudio($fileUid);
     }
 
     public function displayEndField(array $data): bool
     {
         $fileUid = $this->getFileUid($data);
 
-        return $this->isYoutubeVideo($fileUid) || $this->isVimeoVideo($fileUid);
+        return $this->isYoutubeVideo($fileUid) || $this->isVimeoVideo($fileUid) || $this->isLocalVideo($fileUid) || $this->isLocalAudio($fileUid);
     }
 }

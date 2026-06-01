@@ -109,7 +109,7 @@ class VideoTagRenderer extends \TYPO3\CMS\Core\Resource\Rendering\VideoTagRender
                 14 => 'noplaybackrate nofullscreen noremoteplayback',
                 15 => 'nodownload noplaybackrate nofullscreen noremoteplayback',
             ];
-            $attributes[] = 'controlsList="' . $controlsList[$options['controlsList']] . '"';
+            $options['controlsList'] = $controlsList[$options['controlsList']];
         }
 
         if (!empty($options['autoplay'])) {
@@ -150,6 +150,19 @@ class VideoTagRenderer extends \TYPO3\CMS\Core\Resource\Rendering\VideoTagRender
 
         $source = htmlspecialchars($this->getSource($file, $usedPathsRelativeToCurrentScript));
 
+        $start = (int)$file->getProperty('start_time');
+        if ($start < 0) {
+            $start = 0;
+        }
+        $end = (int)$file->getProperty('end_time');
+
+        $sourceParams = [$start];
+        if ($end > 0) {
+            $sourceParams[] = $end;
+        }
+
+        $sourceTime = sprintf('#t=%s', implode(',', $sourceParams));
+
         $noVideoSupport = sprintf('<p>%s <a href="%s">%s</a></p>',
             self::translate('LLL:EXT:video_vtt/Resources/Private/Language/locallang.xlf:no_video_support'),
             $source,
@@ -157,9 +170,10 @@ class VideoTagRenderer extends \TYPO3\CMS\Core\Resource\Rendering\VideoTagRender
         );
 
         return sprintf(
-            '<video%s><source src="%s" type="%s">%s%s</video>',
+            '<video%s><source src="%s%s" type="%s">%s%s</video>',
             $attributes !== [] ? ' ' . implode(' ', $attributes) : '',
             $source,
+            $sourceTime,
             $file->getMimeType(),
             $this->getTracks($file),
             $noVideoSupport

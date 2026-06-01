@@ -38,12 +38,22 @@ class ControlsList
             $remotePlayback,
         ];
 
+        $mp3 = [
+            $download,
+            $playbackRate,
+        ];
+
         $ytVim = [
             $fullscreen
         ];
 
        if($this->displayCondition->isYoutubeVideo($fileUid) || $this->displayCondition->isVimeoVideo($fileUid)) {
            $params['items'] = $ytVim;
+           return;
+       }
+
+       if($this->displayCondition->isLocalAudio($fileUid)) {
+           $params['items'] = $mp3;
            return;
        }
 
