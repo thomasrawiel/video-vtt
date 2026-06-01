@@ -3,7 +3,7 @@
 Video controls
 ==========================
 
-For YouTube, Vimeo and self-hosted videos you can set certain attributes which are added to the video tag in the frontend.
+For YouTube, Vimeo and self-hosted videos or audios you can set certain attributes which are added to the video/audio tag in the frontend.
 
 .. figure:: ../Images/VideoControls/AvailableControls.jpg
    :class: with-shadow
@@ -45,14 +45,16 @@ YouTube & Vimeo: Fullscreen only
 
 Self-hosted videos: Fullscreen, Enable Download, Enable Playback Rate, Enable Remote Playback
 
+Self-hosted audios: Enable Download, Enable Playback Rate
+
 :Picture in Picture: Add picture-in-picture mode for the video.
 Applies to: self-hosted videos only
 
 :Start video at: Begin playback at a specific point in the video instead of starting from the beginning. Enter the time in seconds.
-Applies to: YouTube, Vimeo, self-hosted videos
+Applies to: YouTube, Vimeo, self-hosted videos/ audios
 
 :End video at: Stop playback at a specific point in the video rather than playing until the end. Enter the time in seconds.
-Applies to: YouTube, Vimeo, self-hosted videos
+Applies to: YouTube, Vimeo, self-hosted videos/ audios
 
 :Video subtitles language: Select the language for the YouTube subtitles. Only languages available for the current video will be applied. When set, subtitles are automatically loaded and displayed in the chosen language.
 Applies to: YouTube only

@@ -43,8 +43,8 @@ In the `Allowed excludefields` section of the same group, follow these steps to 
 
 2) Go to the `File Reference` table. The administrator determines which fields are accessible to the editor. Allow the following fields:
 
-   - Video Controls:
-      - Loop Video (loop) [sys_file_reference:loop]
+   - Video/ Audio Controls:
+      - Loop Video / Audio (loop) [sys_file_reference:loop]
       - Muted (mute) [sys_file_reference:mute]
       - Show Controls (controls) [sys_file_reference:controls]
       - Show info (showinfo) [sys_file_reference:showinfo]
