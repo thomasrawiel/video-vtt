@@ -161,7 +161,12 @@ class VideoTagRenderer extends \TYPO3\CMS\Core\Resource\Rendering\VideoTagRender
             $sourceParams[] = $end;
         }
 
-        $sourceTime = sprintf('#t=%s', implode(',', $sourceParams));
+        // Only add the time parameter if they are actually set to something other than 0.
+        // Otherwise firefox will show the first video frame from that timestamp instead of the poster image.
+        $sourceTime = '';
+        if ($start !== 0 || $end !== 0) {
+            $sourceTime = sprintf('#t=%s', implode(',', $sourceParams));
+        }
 
         $noVideoSupport = sprintf('<p>%s <a href="%s">%s</a></p>',
             self::translate('LLL:EXT:video_vtt/Resources/Private/Language/locallang.xlf:no_video_support'),
