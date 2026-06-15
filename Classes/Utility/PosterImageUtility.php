@@ -3,6 +3,8 @@ declare(strict_types=1);
 
 namespace TRAW\VideoVtt\Utility;
 
+use TRAW\VideoVtt\Events\PosterImageCropVariantEvent;
+use TYPO3\CMS\Core\EventDispatcher\EventDispatcher;
 use TYPO3\CMS\Core\Imaging\ImageManipulation\CropVariantCollection;
 use TYPO3\CMS\Core\Resource\File;
 use TYPO3\CMS\Core\Resource\FileInterface;
@@ -14,7 +16,7 @@ use TYPO3\CMS\Extbase\Service\ImageService;
 
 class PosterImageUtility
 {
-    public static function getPosterImage(FileInterface $file, bool $returnProcessedImage = true): ProcessedFile|FileReference|null
+    public static function getPosterImage(FileInterface $file, string $cropVariant = 'default'): ProcessedFile|FileReference|null
     {
         $posterImage = null;
 
@@ -38,9 +40,11 @@ class PosterImageUtility
             }
 
             if (($posterImage[0] ?? null) instanceof FileReference) {
-                $posterImage = $returnProcessedImage
-                    ? self::getCropVariant($posterImage[0])
-                    : $posterImage[0];
+                $cropVariant = GeneralUtility::makeInstance(EventDispatcher::class)->dispatch(
+                    new PosterImageCropVariantEvent($cropVariant)
+                )->getCropVariant();
+
+                $posterImage = self::getCropVariant($posterImage[0], $cropVariant);
             }
         }
 
