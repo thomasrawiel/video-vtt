@@ -163,14 +163,9 @@ call_user_func(function ($_EXTKEY = 'video_vtt', $table = 'sys_file_reference'):
                     'types' => [
                         \TYPO3\CMS\Core\Resource\FileType::IMAGE->value => [
                             'showitem' => '
-                                    --palette--;;imageoverlayPalette,
+                                    --palette--;;posterImageOverlayPalette,
                                     --palette--;;filePalette',
                         ],
-                    ],
-                    'columns' => [
-                        'link' => false,
-                        'description' => false,
-                        'title' => false,
                     ],
                 ],
             ],
@@ -238,7 +233,11 @@ call_user_func(function ($_EXTKEY = 'video_vtt', $table = 'sys_file_reference'):
          --linebreak--,autoplay,mute,loop,
          --linebreak--,controls';
 
-    $GLOBALS['TCA'][$table]['palettes']['basicoverlayPalette']['showitem']
-        = 'title,description,
-    --linebreak--,track_default,--linebreak--,track_label,track_language,track_type';
+    $GLOBALS['TCA'][$table]['palettes']['trackOverlayPalette']['showitem']
+        = 'track_default,--linebreak--,track_label,track_language,track_type';
+
+    $GLOBALS['TCA'][$table]['palettes']['posterImageOverlayPalette'] = [
+        'label' => 'LLL:EXT:core/Resources/Private/Language/locallang_tca.xlf:sys_file_reference.imageoverlayPalette',
+        'showitem' => 'alternative,--linebreak--,crop',
+    ];
 });

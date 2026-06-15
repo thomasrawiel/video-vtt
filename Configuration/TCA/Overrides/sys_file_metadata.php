@@ -12,11 +12,12 @@ call_user_func(function ($_EXTKEY = 'video_vtt', $table = 'sys_file_metadata'): 
                 'type' => 'file',
                 'allowed' => 'vtt',
                 'overrideChildTca' => [
-                    'columns' => [
-                        'link' => false,
-                        'description' => false,
-                        'alternative' => false,
-                        'title' => false,
+                    'types' => [
+                        \TYPO3\CMS\Core\Resource\FileType::TEXT->value => [
+                            'showitem' => '
+                                    --palette--;;trackOverlayPalette,
+                                    --palette--;;filePalette',
+                        ],
                     ],
                 ],
             ],
@@ -36,14 +37,9 @@ call_user_func(function ($_EXTKEY = 'video_vtt', $table = 'sys_file_metadata'): 
                     'types' => [
                         \TYPO3\CMS\Core\Resource\FileType::IMAGE->value => [
                             'showitem' => '
-                                    --palette--;;imageoverlayPalette,
+                                    --palette--;;posterImageOverlayPalette,
                                     --palette--;;filePalette',
                         ],
-                    ],
-                    'columns' => [
-                        'link' => false,
-                        'description' => false,
-                        'title' => false,
                     ],
                 ],
             ],
