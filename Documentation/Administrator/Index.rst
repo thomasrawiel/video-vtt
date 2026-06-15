@@ -12,3 +12,4 @@ This chapter describes how to manage the extension from an administrators point 
    Installation
    Configuration
    BackendUserSettings
+   Events
