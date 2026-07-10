@@ -26,7 +26,7 @@ class SiteLanguageUtility
         $site = GeneralUtility::makeInstance(SiteFinder::class)
             ->getSiteByPageId($configuration['row']['pid']);
         foreach ($site->getAllLanguages() as $language) {
-            if (!in_array($language->getLocale()->getLanguageCode(), array_column(self::$languages, 1)))
+            if (!in_array($language->getLocale()->getLanguageCode(), array_column(self::$languages, 'value')))
                 self::$languages[] = ['label' => $language->getNavigationTitle(), 'value' => $language->getLocale()->getLanguageCode()];
         }
 
