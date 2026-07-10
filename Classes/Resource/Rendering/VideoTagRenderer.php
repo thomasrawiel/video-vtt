@@ -12,6 +12,7 @@ namespace TRAW\VideoVtt\Resource\Rendering;
  */
 
 use Psr\Http\Message\ServerRequestInterface;
+use TRAW\VideoVtt\Options\Options;
 use TRAW\VideoVtt\Utility\CoreUtility;
 use TRAW\VideoVtt\Utility\PosterImageUtility;
 use TYPO3\CMS\Core\Imaging\ImageManipulation\CropVariantCollection;
@@ -50,29 +51,19 @@ class VideoTagRenderer extends \TYPO3\CMS\Core\Resource\Rendering\VideoTagRender
     #[\Override]
     public function render(FileInterface $file, $width, $height, array $options = [], $usedPathsRelativeToCurrentScript = false): string
     {
-        //take all options from file reference
-        $options['autoplay'] = $file->getProperty('autoplay');
-        $options['muted'] = $file->getProperty('mute');
-        $options['controls'] = $file->getProperty('controls');
-        $options['controlsList'] = $file->getProperty('controlslist');
-        $options['picinpic'] = $file->getProperty('picinpic');
-        $options['loop'] = $file->getProperty('loop');
-
-        // If autoplay isn't set manually check if $file is a FileReference take autoplay from there
-        if (empty($options['autoplay']) && $file instanceof FileReference) {
-            $options['autoplay'] = $file->getProperty('autoplay') ?? '0';
-        }
+        $options = new Options($file, $options);
 
         $attributes = [];
-        if (isset($options['additionalAttributes']) && is_array($options['additionalAttributes'])) {
+        if ($options->getAdditionalAttributes() !== []) {
             $attributes[] = GeneralUtility::implodeAttributes($options['additionalAttributes'], true, true);
         }
 
-        if (isset($options['data']) && is_array($options['data'])) {
-            array_walk($options['data'], function (&$value, $key): void {
+        if ($options->getData() !== []) {
+            $data = $options->getData();
+            array_walk($data, function (&$value, $key): void {
                 $value = 'data-' . htmlspecialchars($key) . '="' . htmlspecialchars($value) . '"';
             });
-            $attributes[] = implode(' ', $options['data']);
+            $attributes[] = implode(' ', $data);
         }
 
         if ((int)$width > 0) {
@@ -83,61 +74,45 @@ class VideoTagRenderer extends \TYPO3\CMS\Core\Resource\Rendering\VideoTagRender
             $attributes[] = 'height="' . (int)$height . '"';
         }
 
-        if (!isset($options['controls']) || !empty($options['controls'])) {
+        if ($options->getControls()) {
             $attributes[] = 'controls';
         }
 
-        if (isset($options['picinpic']) && $options['picinpic'] === 0) {
+        if (!$options->getPicinpic()) {
             $attributes[] = 'disablePictureInPicture';
         }
 
-        if (!empty($options['controlsList']) && $options['controlsList'] > 0) {
-            $controlsList = [
-                1 => 'nodownload',
-                2 => 'noplaybackrate',
-                4 => 'nofullscreen',
-                8 => 'noremoteplayback',
-                3 => 'nodownload noplaybackrate',
-                5 => 'nodownload nofullscreen',
-                9 => 'nodownload noremoteplayback',
-                6 => 'noplaybackrate nofullscreen',
-                10 => 'noplaybackrate noremoteplayback',
-                12 => 'nofullscreen noremoteplayback',
-                7 => 'nodownload noplaybackrate nofullscreen',
-                11 => 'nodownload noplaybackrate noremoteplayback',
-                13 => 'nodownload nofullscreen noremoteplayback',
-                14 => 'noplaybackrate nofullscreen noremoteplayback',
-                15 => 'nodownload noplaybackrate nofullscreen noremoteplayback',
-            ];
-            $options['controlsList'] = $controlsList[$options['controlsList']];
-        }
-
-        if (!empty($options['autoplay'])) {
+        if ($options->getAutoPlay()) {
             $attributes[] = 'autoplay';
             $attributes[] = 'playsinline';
             $attributes[] = 'muted';
         }
 
-        if (!empty($options['muted'])) {
+        if ($options->getMute()) {
             $attributes[] = 'muted';
         }
 
-        if (!empty($options['loop'])) {
+        if ($options->getLoop()) {
             $attributes[] = 'loop';
         }
 
-        if (isset($options['additionalConfig']) && is_array($options['additionalConfig'])) {
-            foreach ($options['additionalConfig'] as $key => $value) {
+        if ($options->getAdditionalConfig() !== []) {
+            foreach ($options->getAdditionalConfig() as $key => $value) {
                 if ((bool)$value) {
                     $attributes[] = htmlspecialchars((string)$key);
                 }
             }
         }
 
-        foreach (['class', 'dir', 'id', 'lang', 'style', 'title', 'accesskey', 'tabindex', 'onclick', 'controlsList', 'preload'] as $key) {
-            if (!empty($options[$key])) {
-                $attributes[] = $key . '="' . htmlspecialchars((string)$options[$key]) . '"';
+        foreach (['class', 'dir', 'id', 'lang', 'style', 'title', 'accesskey', 'tabindex', 'onclick', 'preload'] as $key) {
+            if ($options->get($key)) {
+                $attributes[] = $key . '="' . htmlspecialchars((string)$options->get($key)) . '"';
             }
+        }
+
+        if ($options->getControlsList()) {
+            $controlsList = $options->getControlsListValueVideo();
+            $attributes[] = 'controlsList="' . htmlspecialchars((string)$controlsList) . '"';
         }
 
         $posterImage = PosterImageUtility::getPosterImage($file);
@@ -150,14 +125,14 @@ class VideoTagRenderer extends \TYPO3\CMS\Core\Resource\Rendering\VideoTagRender
 
         $source = htmlspecialchars($this->getSource($file, $usedPathsRelativeToCurrentScript));
 
-        $start = (int)$file->getProperty('start_time');
+        $start = $options->getStartTime();
         if ($start < 0) {
             $start = 0;
         }
-        $end = (int)$file->getProperty('end_time');
-
         $sourceParams = [$start];
-        if ($end > 0) {
+
+        $end = $options->getEndTime();
+        if ($end > $start) {
             $sourceParams[] = $end;
         }
 

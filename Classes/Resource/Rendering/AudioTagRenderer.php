@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace TRAW\VideoVtt\Resource\Rendering;
 
 use Psr\Http\Message\ServerRequestInterface;
+use TRAW\VideoVtt\Options\Options;
 use TRAW\VideoVtt\Utility\PosterImageUtility;
 use TYPO3\CMS\Core\Imaging\ImageManipulation\CropVariantCollection;
 use TYPO3\CMS\Core\Resource\File;
@@ -24,11 +25,7 @@ class AudioTagRenderer extends \TYPO3\CMS\Core\Resource\Rendering\AudioTagRender
 
     public function render(FileInterface $file, $width, $height, array $options = [])
     {
-        $options['autoplay'] = $file->getProperty('autoplay');
-        $options['muted'] = (bool)$options['autoplay'] ? '1' : $file->getProperty('mute');
-        $options['controls'] = $file->getProperty('controls');
-        $options['controlsList'] = $file->getProperty('controlslist');
-        $options['loop'] = $file->getProperty('loop');
+        $options = new Options($file, $options);
 
         $posterImage = PosterImageUtility::getPosterImage($file, false);
 
@@ -46,60 +43,50 @@ class AudioTagRenderer extends \TYPO3\CMS\Core\Resource\Rendering\AudioTagRender
             );
         }
 
-        // If autoplay isn't set manually check if $file is a FileReference take autoplay from there
-        if (!isset($options['autoplay']) && $file instanceof FileReference) {
-            $autoplay = $file->getProperty('autoplay');
-            if ($autoplay !== null) {
-                $options['autoplay'] = $autoplay;
-            }
-        }
-
         $attributes = [];
-        if (isset($options['additionalAttributes']) && is_array($options['additionalAttributes'])) {
-            $attributes[] = GeneralUtility::implodeAttributes($options['additionalAttributes'], true, true);
+        if ($options->getAdditionalAttributes() !== []) {
+            $attributes[] = GeneralUtility::implodeAttributes($options->getAdditionalAttributes(), true, true);
         }
-        if (isset($options['data']) && is_array($options['data'])) {
-            array_walk($options['data'], static function (string &$value, string $key): void {
+        if ($options->getData() !== []) {
+            $data = $options->getData();
+            array_walk($data, static function (string &$value, string $key): void {
                 $value = 'data-' . htmlspecialchars($key) . '="' . htmlspecialchars($value) . '"';
             });
-            $attributes[] = implode(' ', $options['data']);
+            $attributes[] = implode(' ', $data);
         }
-        if (!isset($options['controls']) || !empty($options['controls'])) {
+        if ($options->getControls()) {
             $attributes[] = 'controls';
         }
-        if (!empty($options['autoplay'])) {
+        if ($options->getAutoPlay()) {
             $attributes[] = 'autoplay';
-        }
-        if (!empty($options['muted'])) {
             $attributes[] = 'muted';
         }
-        if (!empty($options['loop'])) {
+        if ($options->getMute() && !$options->getAutoPlay()) {
+            $attributes[] = 'muted';
+        }
+        if ($options->getLoop()) {
             $attributes[] = 'loop';
         }
-        if (!empty($options['controlsList']) && $options['controlsList'] > 0) {
-            $controlsList = [
-                1 => 'nodownload',
-                2 => 'noplaybackrate',
-                3 => 'nodownload noplaybackrate',
-            ];
-            $options['controlsList'] = $controlsList[$options['controlsList']];
+        if ($options->getControlsList()) {
+            $controlsList = $options->getControlsListValueAudio();
+            $attributes[] = 'controlsList="' . htmlspecialchars($controlsList) . '"';
         }
-        foreach (['class', 'dir', 'id', 'lang', 'style', 'title', 'accesskey', 'tabindex', 'onclick', 'preload', 'controlsList'] as $key) {
-            if (!empty($options[$key])) {
-                $attributes[] = $key . '="' . htmlspecialchars((string)$options[$key]) . '"';
+        foreach (['class', 'dir', 'id', 'lang', 'style', 'title', 'accesskey', 'tabindex', 'onclick', 'preload'] as $key) {
+            if (!empty($options->get($key))) {
+                $attributes[] = $key . '="' . htmlspecialchars((string)$options->get($key)) . '"';
             }
         }
 
         $source = htmlspecialchars($this->getSource($file));
 
-        $start = (int)$file->getProperty('start_time');
+        $start = $options->getStartTime();
         if ($start < 0) {
             $start = 0;
         }
-        $end = (int)$file->getProperty('end_time');
-
         $sourceParams = [$start];
-        if ($end > 0) {
+
+        $end = $options->getEndTime();
+        if ($end > $start) {
             $sourceParams[] = $end;
         }
 

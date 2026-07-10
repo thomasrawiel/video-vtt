@@ -11,6 +11,7 @@ namespace TRAW\VideoVtt\Resource\Rendering;
  * The TYPO3 project - inspiring people to share!
  */
 
+use TRAW\VideoVtt\Options\Options;
 use TRAW\VideoVtt\Utility\DurationUtility;
 use TYPO3\CMS\Core\Resource\FileInterface;
 use TYPO3\CMS\Core\Resource\FileReference;
@@ -49,51 +50,6 @@ class VimeoRenderer extends \TYPO3\CMS\Core\Resource\Rendering\VimeoRenderer
     }
 
     #[\Override]
-    protected function collectOptions(array $options, FileInterface $file): array
-    {
-        // Check for an autoplay option at the file reference itself, if not overridden yet.
-        if (!isset($options['autoplay']) && $file instanceof FileReference) {
-            $autoplay = $file->getProperty('autoplay');
-            if ($autoplay !== null) {
-                $options['autoplay'] = $autoplay;
-            }
-        }
-
-        /** @extensionScannerIgnoreLine */
-        if (!isset($options['allow'])) {
-            /** @extensionScannerIgnoreLine */
-            $options['allow'] = 'fullscreen';
-            if (!empty($options['autoplay'])) {
-                /** @extensionScannerIgnoreLine */
-                $options['allow'] = 'autoplay; fullscreen';
-            }
-        }
-
-        if (!isset($options['picinpic'])) {
-            $pip = $file->getProperty('picinpic');
-            if ($pip !== null) {
-                $options['picinpic'] = $pip;
-            }
-        }
-
-        if (!isset($options['controls'])) {
-            $controls = $file->getProperty('controls');
-            if ($controls !== null) {
-                $options['controls'] = $controls;
-            }
-        }
-
-        if (!isset($options['loop'])) {
-            $loop = $file->getProperty('loop');
-            if ($loop !== null) {
-                $options['loop'] = $loop;
-            }
-        }
-
-        return $options;
-    }
-
-    #[\Override]
     protected function createVimeoUrl(array $options, FileInterface $file): string
     {
         $videoIdRaw = $this->getVideoIdFromFile($file);
@@ -101,6 +57,8 @@ class VimeoRenderer extends \TYPO3\CMS\Core\Resource\Rendering\VimeoRenderer
 
         $videoId = $videoIdRaw[0] ?? null;
         $hash = $videoIdRaw[1] ?? null;
+
+        $options = new Options($file, $options);
 
         if (empty($videoId)) {
             $orgFile = $file instanceof FileReference ? $file->getOriginalFile() : $file;
@@ -113,32 +71,36 @@ class VimeoRenderer extends \TYPO3\CMS\Core\Resource\Rendering\VimeoRenderer
             $urlParams[] = 'h=' . $hash;
         }
 
-        if (!empty($options['autoplay'])) {
+        if ($options->getAutoPlay()) {
             $urlParams[] = 'autoplay=1';
             // If autoplay is enabled, enforce muted=1, see https://developer.chrome.com/blog/autoplay/
             $urlParams[] = 'muted=1';
         }
 
-        if (!empty($options['loop'])) {
+        if ($options->getMute() && !$options->getAutoPlay()) {
+            $urlParams[] = 'muted=1';
+        }
+
+        if ($options->getLoop()) {
             $urlParams[] = 'loop=1';
         }
 
-        if (isset($options['api']) && (int)$options['api'] === 1) {
+        if ((int)$options->get('api') === 1) {
             $urlParams[] = 'api=1';
         }
 
-        if (!isset($options['no-cookie']) || !empty($options['no-cookie'])) {
+        if ($options->get('no-cookie')) {
             $urlParams[] = 'dnt=1';
         }
 
-        $urlParams[] = 'controls=' . (int)!empty($options['controls']);
-        $urlParams[] = 'pip=' . (int)!empty($options['picinpic']);
-        $urlParams[] = 'title=' . (int)!empty($options['showinfo']);
-        $urlParams[] = 'byline=' . (int)!empty($options['showinfo']);
+        $urlParams[] = 'controls=' . $options->getControls();
+        $urlParams[] = 'pip=' . $options->getPicinpic();
+        $urlParams[] = 'title=' . $options->getShowInfo();
+        $urlParams[] = 'byline=' . $options->getShowInfo();
         $urlParams[] = 'portrait=0';
 
-        $start = $file->getProperty('start_time');
-        $end = $file->getProperty('end_time');
+        $start = $options->getStartTime();
+        $end = $options->getEndTime();
 
         $urlAnchors = [];
         //#t=1m30s&end=3m10s
@@ -146,7 +108,7 @@ class VimeoRenderer extends \TYPO3\CMS\Core\Resource\Rendering\VimeoRenderer
         if ($start > 0) {
             $urlAnchors[] = 't=' . DurationUtility::formatDuration($start);
         }
-        if ($end > 0 && $end > $start) {
+        if ($end > $start) {
             $urlAnchors[] = 'end=' . DurationUtility::formatDuration($end);
         }
 

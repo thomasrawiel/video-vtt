@@ -11,6 +11,7 @@ namespace TRAW\VideoVtt\Resource\Rendering;
  * The TYPO3 project - inspiring people to share!
  */
 
+use TRAW\VideoVtt\Options\Options;
 use TYPO3\CMS\Core\Resource\FileInterface;
 use TYPO3\CMS\Core\Resource\FileReference;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -59,60 +60,54 @@ class YouTubeRenderer extends \TYPO3\CMS\Core\Resource\Rendering\YouTubeRenderer
             throw new \Exception('Referenced file "' . $orgFile->getIdentifier() . '" not found.', 9498323370);
         }
 
-        $options['autoplay'] = $file->getProperty('autoplay');
-        $options['loop'] = $file->getProperty('loop');
-        $options['mute'] = $file->getProperty('mute');
-        $options['controls'] = $file->getProperty('controls');
-        $options['showinfo'] = $file->getProperty('showinfo');
-        $options['lang'] = $file->getProperty('lang');
-        $options['controlsList'] = $file->getProperty('controlslist');
+        $options = new Options($file, $options);
 
         $urlParams = [
             'autohide=1',
             'modestbranding=1',
             'playsinline=1',
             'rel=0',
-            'controls=' . $options['controls'],
-            'showinfo=' . $options['showinfo'],
+            'controls=' . $options->getControls(),
+            'showinfo=' . $options->getShowInfo(),
             'enablejsapi=1&origin=' . rawurlencode(GeneralUtility::getIndpEnv('TYPO3_REQUEST_HOST')),
         ];
 
-        if (!empty($options['autoplay'])) {
+        if ($options->getAutoPlay()) {
             $urlParams[] = 'autoplay=1';
             // If autoplay is enabled, enforce mute=1, see https://developer.chrome.com/blog/autoplay/
             $urlParams[] = 'mute=1';
         }
 
-        if (!empty($options['mute']) && empty($options['autoplay'])) {
+        if ($options->getMute() && !$options->getAutoplay()) {
             $urlParams[] = 'mute=1';
         }
 
-        if ($options['loop']) {
+        if ($options->getLoop()) {
             $urlParams[] = 'loop=1&playlist=' . rawurlencode($videoId);
         }
 
-        $start = $file->getProperty('start_time');
-        $end = $file->getProperty('end_time');
+        $start = $options->getStartTime();
+        $end = $options->getEndTime();
 
         if ($start > 0) {
             $urlParams[] = 'start=' . $start;
         }
-        if ($end > 0) {
+        if ($end > $start) {
             $urlParams[] = 'end=' . $end;
         }
 
-        if (!empty($options['lang'])) {
+        if ($options->getLang()) {
             $urlParams[] = 'cc_load_policy=1';
-            $urlParams[] = 'hl=' . $options['lang'];
-            $urlParams[] = 'cc_lang_pref=' . $options['lang'];
+            $urlParams[] = 'hl=' . $options->getLang();
+            $urlParams[] = 'cc_lang_pref=' . $options->getLang();
         }
 
-        if (isset($options['controlsList'])) {
-            $urlParams[] = 'fs=' . ((int)(!$options['controlsList']));
+        if ($options->getControlsList()) {
+            $urlParams[] = 'fs=' . ((int)(!$options->getControlsList()));
         }
 
         return sprintf(
-            'https://www.youtube-nocookie.com/embed/%s?%s',
+            'https://www.youtube'.($options->get('no-cookie')?'-nocookie':'').'.com/embed/%s?%s',
             rawurlencode($videoId),
             implode('&', $urlParams)
         );
