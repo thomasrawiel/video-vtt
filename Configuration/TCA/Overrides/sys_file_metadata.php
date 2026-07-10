@@ -13,7 +13,7 @@ call_user_func(function ($_EXTKEY = 'video_vtt', $table = 'sys_file_metadata'): 
                 'allowed' => 'vtt',
                 'overrideChildTca' => [
                     'types' => [
-                        \TYPO3\CMS\Core\Resource\FileType::TEXT->value => [
+                        \TYPO3\CMS\Core\Resource\AbstractFile::FILETYPE_TEXT => [
                             'showitem' => '
                                     --palette--;;trackOverlayPalette,
                                     --palette--;;filePalette',
@@ -35,7 +35,7 @@ call_user_func(function ($_EXTKEY = 'video_vtt', $table = 'sys_file_metadata'): 
                 'allowed' => 'common-image-types',
                 'overrideChildTca' => [
                     'types' => [
-                        \TYPO3\CMS\Core\Resource\FileType::IMAGE->value => [
+                        \TYPO3\CMS\Core\Resource\AbstractFile::FILETYPE_IMAGE => [
                             'showitem' => '
                                     --palette--;;posterImageOverlayPalette,
                                     --palette--;;filePalette',
@@ -48,13 +48,13 @@ call_user_func(function ($_EXTKEY = 'video_vtt', $table = 'sys_file_metadata'): 
     \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addToAllTCAtypes(
         $table,
         'tracks',
-        (string)\TYPO3\CMS\Core\Resource\FileType::VIDEO->value,
+        (string)\TYPO3\CMS\Core\Resource\AbstractFile::FILETYPE_VIDEO,
         'after:duration'
     );
     \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addToAllTCAtypes(
         $table,
         'poster',
-        \TYPO3\CMS\Core\Resource\FileType::VIDEO->value.','.\TYPO3\CMS\Core\Resource\FileType::AUDIO->value,
+        \TYPO3\CMS\Core\Resource\AbstractFile::FILETYPE_VIDEO.','.\TYPO3\CMS\Core\Resource\AbstractFile::FILETYPE_AUDIO,
         'after:duration'
     );
 });

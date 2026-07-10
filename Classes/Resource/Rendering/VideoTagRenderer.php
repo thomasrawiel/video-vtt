@@ -11,6 +11,7 @@ namespace TRAW\VideoVtt\Resource\Rendering;
  * The TYPO3 project - inspiring people to share!
  */
 
+use FriendsOfTYPO3\Headless\Utility\FileUtility;
 use Psr\Http\Message\ServerRequestInterface;
 use TRAW\VideoVtt\Options\Options;
 use TRAW\VideoVtt\Utility\CoreUtility;
@@ -51,6 +52,10 @@ class VideoTagRenderer extends \TYPO3\CMS\Core\Resource\Rendering\VideoTagRender
     #[\Override]
     public function render(FileInterface $file, $width, $height, array $options = [], $usedPathsRelativeToCurrentScript = false): string
     {
+        if (($options['returnUrl'] ?? false) === true) {
+            return htmlspecialchars(GeneralUtility::makeInstance(FileUtility::class)->getAbsoluteUrl($file->getPublicUrl()), ENT_QUOTES | ENT_HTML5);
+        }
+
         $options = new Options($file, $options);
 
         $attributes = [];

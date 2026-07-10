@@ -75,10 +75,10 @@ class Options
 
     public function getControlsListValue(): string
     {
-        if ($this->file->getOriginalFile()->getType() === \TYPO3\CMS\Core\Resource\FileType::VIDEO->value) {
+        if ($this->file->getOriginalFile()->getType() === \TYPO3\CMS\Core\Resource\AbstractFile::FILETYPE_VIDEO) {
             return $this->getControlsListValueVideo();
         }
-        if ($this->file->getOriginalFile()->getType() === \TYPO3\CMS\Core\Resource\FileType::AUDIO->value) {
+        if ($this->file->getOriginalFile()->getType() === \TYPO3\CMS\Core\Resource\AbstractFile::FILETYPE_AUDIO) {
             return $this->getControlsListValueAudio();
         }
         return '';

@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace TRAW\VideoVtt\Resource\Rendering;
 
+use FriendsOfTYPO3\Headless\Utility\FileUtility;
 use Psr\Http\Message\ServerRequestInterface;
 use TRAW\VideoVtt\Options\Options;
 use TRAW\VideoVtt\Utility\PosterImageUtility;
@@ -25,6 +26,10 @@ class AudioTagRenderer extends \TYPO3\CMS\Core\Resource\Rendering\AudioTagRender
 
     public function render(FileInterface $file, $width, $height, array $options = [])
     {
+        if (($options['returnUrl'] ?? false) === true) {
+            return htmlspecialchars(GeneralUtility::makeInstance(FileUtility::class)->getAbsoluteUrl($file->getPublicUrl()), ENT_QUOTES | ENT_HTML5);
+        }
+
         $options = new Options($file, $options);
 
         $posterImage = PosterImageUtility::getPosterImage($file, false);

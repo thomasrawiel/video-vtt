@@ -140,4 +140,6 @@ class VimeoRenderer extends \TYPO3\CMS\Core\Resource\Rendering\VimeoRenderer
         }
         return parent::render(...func_get_args());
     }
+
+
 }
