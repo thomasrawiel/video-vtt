@@ -34,7 +34,16 @@ class YouTubeRenderer extends \TYPO3\CMS\Core\Resource\Rendering\YouTubeRenderer
         //fix for youtube error 153
         $attributes['referrerpolicy'] = 'strict-origin-when-cross-origin';
 
-        if (isset($options['file']) && $options['file']->getProperty('controlslist') === 1) {
+        $file = $options['file'] ?? null;
+        if ($file instanceof FileReferennce) {
+            $controlsList = $file->getProperty('controlslist');
+        } elseif ($file instanceof \TYPO3\CMS\Extbase\Domain\Model\FileReference) {
+            $controlsList = $file?->getOriginalResource()?->getProperty('controlslist');
+        } else {
+            $controlsList = 0;
+        }
+
+        if ($controlsList) {
             unset($attributes['allowfullscreen']);
             if (!empty($attributes['allow'])) {
                 $values = preg_split('/[\s;]+/', $attributes['allow']);
