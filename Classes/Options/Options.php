@@ -15,9 +15,6 @@ class Options
     {
         $this->file = $file;
         $options['autoplay'] = $file->getProperty('autoplay');
-        if (empty($options['autoplay']) && $file instanceof FileReference) {
-            $options['autoplay'] = $file->getProperty('autoplay') ?? '0';
-        }
         $options['mute'] = $file->getProperty('mute');
         $options['loop'] = $file->getProperty('loop');
         $options['showinfo'] = $file->getProperty('showinfo');
