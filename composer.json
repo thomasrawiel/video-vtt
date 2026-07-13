@@ -15,13 +15,13 @@
 		}
 	},
 	"require": {
-		"typo3/cms-core": "^12 || ^13.4 || ^14.0",
-		"typo3/cms-filemetadata": "^12 || ^13.4 || ^14.0"
+		"typo3/cms-core": "^12",
+		"typo3/cms-filemetadata": "^12"
 	},
 	"extra": {
 		"typo3/cms": {
 			"extension-key": "video_vtt",
-			"version": "2.8.6",
+			"version": "2.3.3",
 			"Package": {
 				"providesPackages": {}
 			}
