@@ -55,7 +55,7 @@ class VideoTagRenderer extends \TYPO3\CMS\Core\Resource\Rendering\VideoTagRender
 
         $attributes = [];
         if ($options->getAdditionalAttributes() !== []) {
-            $attributes[] = GeneralUtility::implodeAttributes($options['additionalAttributes'], true, true);
+            $attributes[] = GeneralUtility::implodeAttributes($options->getAdditionalAttributes(), true, true);
         }
 
         if ($options->getData() !== []) {
