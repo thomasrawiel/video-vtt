@@ -5,7 +5,6 @@ use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigura
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use TRAW\VideoVtt\EventListener\EnrichFileDataEventListener;
 use TRAW\VideoVtt\Utility\FileUtility;
-use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 
 return static function (ContainerConfigurator $configurator, ContainerBuilder $builder): void {
     $services = $configurator->services();
@@ -18,7 +17,7 @@ return static function (ContainerConfigurator $configurator, ContainerBuilder $b
 
     $services->set(FileUtility::class)->public();
 
-    if (ExtensionManagementUtility::isLoaded('headless')) {
+    if (class_exists(\FriendsOfTYPO3\Headless\Event\EnrichFileDataEvent::class)) {
         $services->set(EnrichFileDataEventListener::class)
             ->tag('event.listener', [
                 'identifier' => 'traw-videovtt/headless-enrichfiledata',

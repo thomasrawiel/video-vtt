@@ -63,6 +63,12 @@ class EnrichFileDataEventListener
 
     private function getTracks(FileInterface $file): array
     {
-        return $this->tracksUtility->getTracksArray($file);
+        $tracks = $this->tracksUtility->getTracksArray($file);
+        
+        foreach($tracks as $key => $track) {
+            $tracks[$key]['public_url'] = $this->fileUtility->getAbsoluteUrl($track['public_url']);
+        }
+        
+        return $tracks;
     }
 }
