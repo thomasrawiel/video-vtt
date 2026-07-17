@@ -24,7 +24,64 @@ class TracksUtility
                 $track['track_type'],
                 $track['track_language'],
                 $track['track_label'],
-                $track['track_default'],);
+                $track['track_default']
+            );
+        }
+
+        return $tracks;
+    }
+
+    public function getDefaultTrack(FileInterface $file): string
+    {
+        $tracks = '';
+        foreach ($this->getTracksArray($file) as $track) {
+            if ((bool)($track['track_default'])) {
+                $tracks .= $this->renderTrackTag(
+                    $track['public_url'],
+                    $track['track_type'],
+                    $track['track_language'],
+                    $track['track_label'],
+                    $track['track_default']
+                );
+            }
+        }
+
+        return $tracks;
+    }
+
+    public function getTrackByType(FileInterface $file, string $trackType): string
+    {
+        $tracks = '';
+
+        foreach ($this->getTracksArray($file) as $track) {
+            if ($track['track_type'] === $trackType) {
+                $tracks .= $this->renderTrackTag(
+                    $track['public_url'],
+                    $track['track_type'],
+                    $track['track_language'],
+                    $track['track_label'],
+                    $track['track_default']
+                );
+            }
+        }
+
+        return $tracks;
+    }
+
+    public function getTrackByLanguage(FileInterface $file, string $trackLanguage): string
+    {
+        $tracks = '';
+
+        foreach ($this->getTracksArray($file) as $track) {
+            if ($track['track_language'] === $trackLanguage) {
+                $tracks .= $this->renderTrackTag(
+                    $track['public_url'],
+                    $track['track_type'],
+                    $track['track_language'],
+                    $track['track_label'],
+                    $track['track_default']
+                );
+            }
         }
 
         return $tracks;
@@ -94,7 +151,7 @@ class TracksUtility
             $trackTag->addAttribute('default', 'default');
         }
 
-        return $trackTag->render();
+        return $trackTag->render() . PHP_EOL;
     }
 
     protected function canRenderTrack(string $publicUrl, string $trackType, string $trackLanguage): bool
