@@ -6,6 +6,7 @@ namespace TRAW\VideoVtt\Resource\Rendering;
 use Psr\Http\Message\ServerRequestInterface;
 use TRAW\VideoVtt\Options\Options;
 use TRAW\VideoVtt\Utility\PosterImageUtility;
+use TRAW\VideoVtt\Utility\FileUtility;
 use TYPO3\CMS\Core\Imaging\ImageManipulation\CropVariantCollection;
 use TYPO3\CMS\Core\Resource\File;
 use TYPO3\CMS\Core\Resource\FileInterface;
@@ -27,12 +28,13 @@ class AudioTagRenderer extends \TYPO3\CMS\Core\Resource\Rendering\AudioTagRender
     {
         $options = new Options($file, $options);
 
-        $posterImage = PosterImageUtility::getPosterImage($file, false);
+        $posterImageUtility = GeneralUtility::makeInstance(PosterImageUtility::class);
+        $posterImage = $posterImageUtility->getPosterImage($file, false);
 
         $imageTag = '';
 
         if ($posterImage instanceof FileReference) {
-            $processedImage = PosterImageUtility::getCropVariant($posterImage);
+            $processedImage = $posterImageUtility->getCropVariant($posterImage);
             $imageTag = sprintf(
                 '<img class="audio-poster" alt="%s" src="%s" width="%s" height="%s" />',
                 $posterImage->getProperty('alternative'),

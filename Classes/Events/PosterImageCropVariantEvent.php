@@ -5,7 +5,7 @@ namespace TRAW\VideoVtt\Events;
 
 class PosterImageCropVariantEvent
 {
-    public function __construct(private string $cropVariant)
+    public function __construct(private string $cropVariant, private string $source)
     {
     }
 
@@ -17,5 +17,10 @@ class PosterImageCropVariantEvent
     public function setCropVariant(string $cropVariant): void
     {
         $this->cropVariant = $cropVariant;
+    }
+
+    public function getSource(): string
+    {
+        return $this->source;
     }
 }
