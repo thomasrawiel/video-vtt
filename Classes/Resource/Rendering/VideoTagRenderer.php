@@ -11,11 +11,11 @@ namespace TRAW\VideoVtt\Resource\Rendering;
  * The TYPO3 project - inspiring people to share!
  */
 
-use FriendsOfTYPO3\Headless\Utility\FileUtility;
 use Psr\Http\Message\ServerRequestInterface;
 use TRAW\VideoVtt\Options\Options;
-use TRAW\VideoVtt\Utility\CoreUtility;
+use TRAW\VideoVtt\Utility\FileUtility;
 use TRAW\VideoVtt\Utility\PosterImageUtility;
+use TRAW\VideoVtt\Utility\TracksUtility;
 use TYPO3\CMS\Core\Imaging\ImageManipulation\CropVariantCollection;
 use TYPO3\CMS\Core\Localization\LanguageService;
 use TYPO3\CMS\Core\Localization\LanguageServiceFactory;
@@ -120,7 +120,8 @@ class VideoTagRenderer extends \TYPO3\CMS\Core\Resource\Rendering\VideoTagRender
             $attributes[] = 'controlsList="' . htmlspecialchars((string)$controlsList) . '"';
         }
 
-        $posterImage = PosterImageUtility::getPosterImage($file);
+        $posterImageUtility = GeneralUtility::makeInstance(PosterImageUtility::class);
+        $posterImage = $posterImageUtility->getPosterImage($file);
         if ($posterImage instanceof \TYPO3\CMS\Core\Resource\ProcessedFile) {
             $attributes[] = 'poster="' . $posterImage->getPublicUrl() . '"';
         }
@@ -152,13 +153,16 @@ class VideoTagRenderer extends \TYPO3\CMS\Core\Resource\Rendering\VideoTagRender
             self::translate('LLL:EXT:video_vtt/Resources/Private/Language/locallang.xlf:video_download'),
         );
 
+        $tracksUtility = GeneralUtility::makeInstance(TracksUtility::class);
+        $tracks = $tracksUtility->getTracks($file);
+
         return sprintf(
             '<video%s><source src="%s%s" type="%s">%s%s</video>',
             $attributes !== [] ? ' ' . implode(' ', $attributes) : '',
             $source,
             $sourceTime,
             $file->getMimeType(),
-            $this->getTracks($file),
+            $tracks,
             $noVideoSupport
         );
     }
@@ -182,63 +186,6 @@ class VideoTagRenderer extends \TYPO3\CMS\Core\Resource\Rendering\VideoTagRender
         }
 
         return $source;
-    }
-
-    protected function getTracks(FileInterface $file): string
-    {
-        $tracks = '';
-        /** @var File $originalFile */
-        $originalFile = $file;
-        if ($file instanceof FileReference) {
-            $originalFile = $file->getOriginalFile();
-        }
-
-        if ($originalFile->getProperty('tracks') && ($originalFile->getMetaData()['uid'] ?? false)) {
-            $fileRepository = GeneralUtility::makeInstance(FileRepository::class);
-            $relatedFiles = $fileRepository->findByRelation(
-                'sys_file_metadata',
-                'tracks',
-                $originalFile->getMetaData()['uid']
-            );
-
-            foreach ($relatedFiles as $fileObject) {
-                $trackLanguage = $fileObject->getProperty('track_language') ?? '';
-                $trackType = $fileObject->getProperty('track_type') ?? 'subtitles';
-                $trackLabel = $fileObject->getProperty('track_label') ?? '';
-                $trackDefault = $fileObject->getProperty('track_default') ?? false;
-                $publicUrl = $this->getSource($fileObject, false);
-
-                if ($this->canRenderTrack($publicUrl, $trackType, $trackLanguage)) {
-                    $trackTag = new TagBuilder('track');
-                    $trackTag->addAttribute('src', $publicUrl);
-                    $trackTag->addAttribute('kind', $trackType);
-                    if (!empty($trackLanguage)) {
-                        $trackTag->addAttribute('srclang', $trackLanguage);
-                    }
-
-                    if (!empty($trackLabel)) {
-                        $trackTag->addAttribute('label', $trackLabel);
-                    }
-
-                    if ($trackDefault) {
-                        $trackTag->addAttribute('default', 'default');
-                    }
-
-                    $tracks .= $trackTag->render();
-                }
-            }
-        }
-
-        return $tracks;
-    }
-
-    protected function canRenderTrack(string $publicUrl, string $trackType, string $trackLanguage): bool
-    {
-        if ($publicUrl === '' || $publicUrl === '0') {
-            return false;
-        }
-        //dont render subtitles without a track language
-        return !($trackType === 'subtitles' && ($trackLanguage === '' || $trackLanguage === '0'));
     }
 
     private static function translate(string $lll): string

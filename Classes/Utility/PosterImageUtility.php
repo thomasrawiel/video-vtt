@@ -16,7 +16,7 @@ use TYPO3\CMS\Extbase\Service\ImageService;
 
 class PosterImageUtility
 {
-    public static function getPosterImage(FileInterface $file, string $cropVariant = 'default', bool $process = true): ProcessedFile|FileReference|null
+    public function getPosterImage(FileInterface $file, string $cropVariant = 'default', bool $process = true): ProcessedFile|FileReference|null
     {
         $posterImage = null;
 
@@ -41,11 +41,11 @@ class PosterImageUtility
 
             if (($posterImage[0] ?? null) instanceof FileReference) {
                 $cropVariant = GeneralUtility::makeInstance(EventDispatcher::class)->dispatch(
-                    new PosterImageCropVariantEvent($cropVariant)
+                    new PosterImageCropVariantEvent($cropVariant, PosterImageUtility::class)
                 )->getCropVariant();
 
                 if ($process) {
-                    $posterImage = self::getCropVariant($posterImage[0], $cropVariant);
+                    $posterImage = $this->getCropVariant($posterImage[0], $cropVariant);
                 } else {
                     $posterImage = $posterImage[0];
                 }
@@ -55,7 +55,7 @@ class PosterImageUtility
         return empty($posterImage) ? null : $posterImage;
     }
 
-    public static function getCropVariant(FileReference $fileReference, string $cropVariant = 'default'): ProcessedFile
+    public function getCropVariant(FileReference $fileReference, string $cropVariant = 'default'): ProcessedFile
     {
         $cropString = $fileReference->getProperty('crop');
         $cropVariantCollection = CropVariantCollection::create($cropString);
