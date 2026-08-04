@@ -21,7 +21,7 @@
   "extra": {
     "typo3/cms": {
       "extension-key": "video_vtt",
-      "version": "2.9.1",
+      "version": "2.9.2",
       "Package": {
         "providesPackages": {}
       }
