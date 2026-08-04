@@ -20,6 +20,11 @@ class AttributeUtility
         }
         $attributes = $this->getGenericMediaAttributes($file, $options);
 
+        if ($this->options->getControlsList()) {
+            $controlsList = $this->options->getControlsListValueAudio();
+            $attributes[] = 'controlsList="' . htmlspecialchars($controlsList) . '"';
+        }
+
         return array_unique($attributes);
     }
 
@@ -31,12 +36,9 @@ class AttributeUtility
 
         $attributes = $this->getGenericMediaAttributes($file, $options);
 
-        if ($width > 0) {
-            $attributes[] = 'width="' . (int)$width . '"';
-        }
-
-        if ($height > 0) {
-            $attributes[] = 'height="' . (int)$height . '"';
+        if ($this->options->getControlsList()) {
+            $controlsList = $this->options->getControlsListValueVideo();
+            $attributes[] = 'controlsList="' . htmlspecialchars($controlsList) . '"';
         }
 
         if ($this->options->getAutoPlay()) {
@@ -45,6 +47,14 @@ class AttributeUtility
 
         if (!$this->options->getPicinpic()) {
             $attributes[] = 'disablePictureInPicture';
+        }
+
+        if ($width > 0) {
+            $attributes[] = 'width="' . (int)$width . '"';
+        }
+
+        if ($height > 0) {
+            $attributes[] = 'height="' . (int)$height . '"';
         }
 
         return array_unique($attributes);
@@ -78,10 +88,6 @@ class AttributeUtility
         }
         if ($this->options->getLoop()) {
             $attributes[] = 'loop';
-        }
-        if ($this->options->getControlsList()) {
-            $controlsList = $this->options->getControlsListValueAudio();
-            $attributes[] = 'controlsList="' . htmlspecialchars($controlsList) . '"';
         }
 
         if ($this->options->getAdditionalConfig() !== []) {
