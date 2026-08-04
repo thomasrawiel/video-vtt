@@ -41,6 +41,7 @@ class ControlsList
         $mp3 = [
             $download,
             $playbackRate,
+            $remotePlayback,
         ];
 
         $ytVim = [

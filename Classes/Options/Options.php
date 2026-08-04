@@ -40,6 +40,10 @@ class Options
         return $this->options[$key] ?? null;
     }
 
+    public function set(string $key, $value) {
+        $this->options[$key] = $value;
+    }
+
     public function getAutoPlay(): int
     {
         return $this->options['autoplay'] ?? 0;

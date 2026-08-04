@@ -40,10 +40,6 @@ class PosterImageUtility
             }
 
             if (($posterImage[0] ?? null) instanceof FileReference) {
-                $cropVariant = GeneralUtility::makeInstance(EventDispatcher::class)->dispatch(
-                    new PosterImageCropVariantEvent($cropVariant, PosterImageUtility::class)
-                )->getCropVariant();
-
                 if ($process) {
                     $posterImage = $this->getCropVariant($posterImage[0], $cropVariant);
                 } else {
@@ -57,6 +53,10 @@ class PosterImageUtility
 
     public function getCropVariant(FileReference $fileReference, string $cropVariant = 'default'): ProcessedFile
     {
+        $cropVariant = GeneralUtility::makeInstance(EventDispatcher::class)->dispatch(
+            new PosterImageCropVariantEvent($cropVariant, PosterImageUtility::class)
+        )->getCropVariant();
+
         $cropString = $fileReference->getProperty('crop');
         $cropVariantCollection = CropVariantCollection::create($cropString);
         $cropArea = $cropVariantCollection->getCropArea($cropVariant); // cropVariant

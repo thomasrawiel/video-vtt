@@ -1,6 +1,6 @@
 {
   "name": "traw/video-vtt",
-  "description": "Extend TYPO3 video functionality",
+  "description": "Video VTT - Extend TYPO3 Video functionality",
   "type": "typo3-cms-extension",
   "keywords": [
     "TYPO3 CMS",
@@ -15,13 +15,13 @@
     }
   },
   "require": {
-    "typo3/cms-core": "^13.4 || ^14.0",
-    "typo3/cms-filemetadata": "^13.4 || ^14.0"
+    "typo3/cms-core": "^13.4 || ^14.3",
+    "typo3/cms-filemetadata": "^13.4 || ^14.3"
   },
   "extra": {
     "typo3/cms": {
       "extension-key": "video_vtt",
-      "version": "2.9.0",
+      "version": "2.9.2",
       "Package": {
         "providesPackages": {}
       }
