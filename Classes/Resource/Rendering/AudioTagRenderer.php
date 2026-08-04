@@ -46,9 +46,7 @@ class AudioTagRenderer extends \TYPO3\CMS\Core\Resource\Rendering\AudioTagRender
         }
 
         $attributes = [];
-        if ($options->getAdditionalAttributes() !== []) {
-            $attributes[] = GeneralUtility::implodeAttributes($options->getAdditionalAttributes(), true, true);
-        }
+
         if ($options->getData() !== []) {
             $data = $options->getData();
             array_walk($data, static function (string &$value, string $key): void {
@@ -73,6 +71,21 @@ class AudioTagRenderer extends \TYPO3\CMS\Core\Resource\Rendering\AudioTagRender
             $controlsList = $options->getControlsListValueAudio();
             $attributes[] = 'controlsList="' . htmlspecialchars($controlsList) . '"';
         }
+
+        if ($options->getAdditionalConfig() !== []) {
+            foreach ($options->getAdditionalConfig() as $key => $value) {
+                if ($value && !in_array($key, $this->excludeAttributes, true)) {
+                    if ((int)$value !== 1) {
+                        $attributes[] = htmlspecialchars($key) . '="' . htmlspecialchars($value) . '"';
+                    } else {
+                        $attributes[] = htmlspecialchars($key);
+                    }
+                    // Ensure that the property is not set afterwards
+                    $options->set($key, false);
+                }
+            }
+        }
+
         foreach (['class', 'dir', 'id', 'lang', 'style', 'title', 'accesskey', 'tabindex', 'onclick', 'preload'] as $key) {
             if (!empty($options->get($key))) {
                 $attributes[] = $key . '="' . htmlspecialchars((string)$options->get($key)) . '"';
