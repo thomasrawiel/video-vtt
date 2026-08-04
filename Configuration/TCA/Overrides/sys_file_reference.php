@@ -231,7 +231,8 @@ call_user_func(function ($_EXTKEY = 'video_vtt', $table = 'sys_file_reference'):
         = 'title,description,
          --linebreak--,poster,
          --linebreak--,autoplay,mute,loop,
-         --linebreak--,controls';
+          --linebreak--,controls,start_time,end_time,
+         --linebreak--,controlslist';
 
     $GLOBALS['TCA'][$table]['palettes']['trackOverlayPalette']['showitem']
         = 'track_default,--linebreak--,track_label,track_language,track_type';
