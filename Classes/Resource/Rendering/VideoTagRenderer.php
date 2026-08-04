@@ -2,17 +2,9 @@
 
 namespace TRAW\VideoVtt\Resource\Rendering;
 
-/*
- * This file is part of the "video_vtt" Extension for TYPO3 CMS.
- *
- * For the full copyright and license information, please read the
- * LICENSE.txt file that was distributed with this source code.
- *
- * The TYPO3 project - inspiring people to share!
- */
-
 use Psr\Http\Message\ServerRequestInterface;
 use TRAW\VideoVtt\Options\Options;
+use TRAW\VideoVtt\Utility\AttributeUtility;
 use TRAW\VideoVtt\Utility\FileUtility;
 use TRAW\VideoVtt\Utility\PosterImageUtility;
 use TRAW\VideoVtt\Utility\TracksUtility;
@@ -24,19 +16,43 @@ use TYPO3\CMS\Core\Resource\FileInterface;
 use TYPO3\CMS\Core\Resource\FileReference;
 use TYPO3\CMS\Core\Resource\FileRepository;
 use TYPO3\CMS\Core\Resource\ProcessedFile;
+use TYPO3\CMS\Core\Resource\Rendering\FileRendererInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\PathUtility;
 use TYPO3\CMS\Extbase\Service\ImageService;
 use TYPO3Fluid\Fluid\Core\ViewHelper\TagBuilder;
 
-/**
- * Class VideoTagRenderer
- */
-class VideoTagRenderer extends \TYPO3\CMS\Core\Resource\Rendering\VideoTagRenderer
+final class VideoTagRenderer implements FileRendererInterface
 {
+    /**
+     * Mime types that can be used in the HTML Video tag
+     */
+    protected array $possibleMimeTypes = ['video/mp4', 'video/webm', 'video/ogg', 'video/x-m4v', 'application/ogg'];
+
+
+    public function __construct(
+        private readonly TracksUtility      $tracksUtility,
+        private readonly PosterImageUtility $posterImageUtility,
+        private readonly AttributeUtility   $attributeUtility,
+    )
+    {
+    }
+
     public function getPriority(): int
     {
         return 7;
+    }
+
+    /**
+     * Check if given File(Reference) can be rendered
+     *
+     * @param FileInterface $file File or FileReference to render
+     *
+     * @return bool
+     */
+    public function canRender(FileInterface $file)
+    {
+        return in_array($file->getMimeType(), $this->possibleMimeTypes, true);
     }
 
     /**
@@ -49,126 +65,33 @@ class VideoTagRenderer extends \TYPO3\CMS\Core\Resource\Rendering\VideoTagRender
      *                                                        FALSE)
      * @param bool       $usedPathsRelativeToCurrentScript    See $file->getPublicUrl()
      */
-    #[\Override]
-    public function render(FileInterface $file, $width, $height, array $options = [], $usedPathsRelativeToCurrentScript = false): string
+    public function render(FileInterface $file, $width, $height, array $options = []): string
     {
         if (($options['returnUrl'] ?? false) === true) {
             return htmlspecialchars(GeneralUtility::makeInstance(FileUtility::class)->getAbsoluteUrl($file->getPublicUrl()), ENT_QUOTES | ENT_HTML5);
         }
+        
+        $attributes = $this->attributeUtility->getVideoAttributes($file, (int)$width, (int)$height, $options);
 
-        $options = new Options($file, $options);
-
-        $attributes = [];
-        if ($options->getAdditionalAttributes() !== []) {
-            $attributes[] = GeneralUtility::implodeAttributes($options->getAdditionalAttributes(), true, true);
-        }
-
-        if ($options->getData() !== []) {
-            $data = $options->getData();
-            array_walk($data, function (&$value, $key): void {
-                $value = 'data-' . htmlspecialchars($key) . '="' . htmlspecialchars($value) . '"';
-            });
-            $attributes[] = implode(' ', $data);
-        }
-
-        if ((int)$width > 0) {
-            $attributes[] = 'width="' . (int)$width . '"';
-        }
-
-        if ((int)$height > 0) {
-            $attributes[] = 'height="' . (int)$height . '"';
-        }
-
-        if ($options->getControls()) {
-            $attributes[] = 'controls';
-        }
-
-        if (!$options->getPicinpic()) {
-            $attributes[] = 'disablePictureInPicture';
-        }
-
-        if ($options->getAutoPlay()) {
-            $attributes[] = 'autoplay';
-            $attributes[] = 'playsinline';
-            $attributes[] = 'muted';
-        }
-
-        if ($options->getMute()) {
-            $attributes[] = 'muted';
-        }
-
-        if ($options->getLoop()) {
-            $attributes[] = 'loop';
-        }
-
-        if ($options->getAdditionalConfig() !== []) {
-            foreach ($options->getAdditionalConfig() as $key => $value) {
-                if ($value && !in_array($key, $this->excludeAttributes, true)) {
-                    if ((int)$value !== 1) {
-                        $attributes[] = htmlspecialchars($key) . '="' . htmlspecialchars($value) . '"';
-                    } else {
-                        $attributes[] = htmlspecialchars($key);
-                    }
-                    // Ensure that the property is not set afterwards
-                    $options->set($key, false);
-                }
-            }
-        }
-
-        foreach (['class', 'dir', 'id', 'lang', 'style', 'title', 'accesskey', 'tabindex', 'onclick', 'preload'] as $key) {
-            if ($options->get($key) && $options->get($key) !== false) {
-                $attributes[] = $key . '="' . htmlspecialchars((string)$options->get($key)) . '"';
-            }
-        }
-
-        if ($options->getControlsList()) {
-            $controlsList = $options->getControlsListValueVideo();
-            $attributes[] = 'controlsList="' . htmlspecialchars((string)$controlsList) . '"';
-        }
-
-        $posterImageUtility = GeneralUtility::makeInstance(PosterImageUtility::class);
-        $posterImage = $posterImageUtility->getPosterImage($file);
+        $posterImage = $this->posterImageUtility->getPosterImage($file);
         if ($posterImage instanceof \TYPO3\CMS\Core\Resource\ProcessedFile) {
             $attributes[] = 'poster="' . $posterImage->getPublicUrl() . '"';
         }
 
-        // Clean up duplicate attributes
-        $attributes = array_unique($attributes);
-
-        $source = htmlspecialchars($this->getSource($file, $usedPathsRelativeToCurrentScript));
-
-        $start = $options->getStartTime();
-        if ($start < 0) {
-            $start = 0;
-        }
-        $sourceParams = [$start];
-
-        $end = $options->getEndTime();
-        if ($end > $start) {
-            $sourceParams[] = $end;
-        }
-
-        $sourceTime = '';
-        if ($start !== 0 || $end !== 0) {
-            $sourceTime = sprintf('#t=%s', implode(',', $sourceParams));
-        }
-
+        $src = htmlspecialchars($this->getSource($file));
         $noVideoSupport = sprintf('<p>%s <a href="%s">%s</a></p>',
             self::translate('LLL:EXT:video_vtt/Resources/Private/Language/locallang.xlf:no_video_support'),
-            $source,
+            $src,
             self::translate('LLL:EXT:video_vtt/Resources/Private/Language/locallang.xlf:video_download'),
         );
-
-        $tracksUtility = GeneralUtility::makeInstance(TracksUtility::class);
-        $tracks = $tracksUtility->getTracks($file);
 
         return sprintf(
             '<video%s><source src="%s%s" type="%s">%s%s</video>',
             $attributes !== [] ? ' ' . implode(' ', $attributes) : '',
-            $source,
-            $sourceTime,
+            $src,
+            $this->attributeUtility->getSourceTime($file, $options),
             $file->getMimeType(),
-            $tracks,
+            $this->tracksUtility->getTracks($file),
             $noVideoSupport
         );
     }
@@ -181,7 +104,7 @@ class VideoTagRenderer extends \TYPO3\CMS\Core\Resource\Rendering\VideoTagRender
         return $this->possibleMimeTypes;
     }
 
-    protected function getSource(FileInterface $file, bool $usedPathsRelativeToCurrentScript): string
+    protected function getSource(FileInterface $file): string
     {
         $source = (string)$file->getPublicUrl();
 

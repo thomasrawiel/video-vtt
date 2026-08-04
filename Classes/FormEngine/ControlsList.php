@@ -10,19 +10,20 @@ class ControlsList
 {
     private readonly ControlsListDisplayCondition $displayCondition;
 
-    public function __construct() {
+    public function __construct()
+    {
         $this->displayCondition = new ControlsListDisplayCondition();
     }
 
     public function itemsProcFunc(array &$params): void
     {
-        if(($params['table'] ?? '') !== 'sys_file_reference') {
+        if (($params['table'] ?? '') !== 'sys_file_reference') {
             return;
         }
 
         $fileUid = (int)($params['row']['uid_local'] ?? 0);
 
-        if($fileUid === 0) {
+        if ($fileUid === 0) {
             return;
         }
 
@@ -45,23 +46,24 @@ class ControlsList
         ];
 
         $ytVim = [
-            $fullscreen
+            $fullscreen,
         ];
 
-       if($this->displayCondition->isYoutubeVideo($fileUid) || $this->displayCondition->isVimeoVideo($fileUid)) {
-           $params['items'] = $ytVim;
-           return;
-       }
+        if ($this->displayCondition->isYoutubeVideo($fileUid) || $this->displayCondition->isVimeoVideo($fileUid)) {
+            $params['items'] = $ytVim;
+            return;
+        }
 
-       if($this->displayCondition->isLocalAudio($fileUid)) {
-           $params['items'] = $mp3;
-           return;
-       }
+        if ($this->displayCondition->isLocalAudio($fileUid)) {
+            $params['items'] = $mp3;
+            return;
+        }
 
-       $params['items'] = $mp4;
+        $params['items'] = $mp4;
     }
 
-    private function getLanguageService(): LanguageService {
+    private function getLanguageService(): LanguageService
+    {
         return $GLOBALS['LANG'];
     }
 }
