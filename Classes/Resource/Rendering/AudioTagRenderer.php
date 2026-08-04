@@ -19,6 +19,8 @@ use TYPO3\CMS\Extbase\Service\ImageService;
 
 class AudioTagRenderer extends \TYPO3\CMS\Core\Resource\Rendering\AudioTagRenderer
 {
+    protected array $excludeAttributes = ['api', 'no-cookie'];
+
     public function getPriority(): int
     {
         return 7;
