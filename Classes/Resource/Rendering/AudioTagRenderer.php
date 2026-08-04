@@ -5,6 +5,7 @@ namespace TRAW\VideoVtt\Resource\Rendering;
 
 use Psr\Http\Message\ServerRequestInterface;
 use TRAW\VideoVtt\Options\Options;
+use TRAW\VideoVtt\Utility\AttributeUtility;
 use TRAW\VideoVtt\Utility\PosterImageUtility;
 use TRAW\VideoVtt\Utility\FileUtility;
 use TYPO3\CMS\Core\Imaging\ImageManipulation\CropVariantCollection;
@@ -13,13 +14,40 @@ use TYPO3\CMS\Core\Resource\FileInterface;
 use TYPO3\CMS\Core\Resource\FileReference;
 use TYPO3\CMS\Core\Resource\FileRepository;
 use TYPO3\CMS\Core\Resource\ProcessedFile;
+use TYPO3\CMS\Core\Resource\Rendering\FileRendererInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\PathUtility;
 use TYPO3\CMS\Extbase\Service\ImageService;
 
-class AudioTagRenderer extends \TYPO3\CMS\Core\Resource\Rendering\AudioTagRenderer
+class AudioTagRenderer implements FileRendererInterface
 {
+    /**
+     * Mime types that can be used in the HTML Video tag
+     *
+     * @var array
+     */
+    protected $possibleMimeTypes = ['audio/mpeg', 'audio/wav', 'audio/x-wav', 'audio/ogg'];
+
     protected array $excludeAttributes = ['api', 'no-cookie'];
+
+    public function __construct(
+        private readonly PosterImageUtility $posterImageUtility,
+        private readonly AttributeUtility   $attributeUtility,
+    )
+    {
+    }
+
+    /**
+     * Check if given File(Reference) can be rendered
+     *
+     * @param FileInterface $file File or FileReference to render
+     *
+     * @return bool
+     */
+    public function canRender(FileInterface $file)
+    {
+        return in_array($file->getMimeType(), $this->possibleMimeTypes, true);
+    }
 
     public function getPriority(): int
     {
@@ -28,91 +56,18 @@ class AudioTagRenderer extends \TYPO3\CMS\Core\Resource\Rendering\AudioTagRender
 
     public function render(FileInterface $file, $width, $height, array $options = [])
     {
-        $options = new Options($file, $options);
+        $attributes = $this->attributeUtility->getAudioAttributes($file, $options);
 
-        $posterImageUtility = GeneralUtility::makeInstance(PosterImageUtility::class);
-        $posterImage = $posterImageUtility->getPosterImage($file);
+        $imageTag = $this->posterImageUtility->getPosterImageTag($file);
 
-        $imageTag = '';
+        $src = htmlspecialchars($this->getSource($file));
+        $sourceTime = $this->attributeUtility->getSourceTime($file, $options);
 
-        if ($posterImage instanceof FileReference) {
-            $processedImage = $posterImageUtility->getCropVariant($posterImage);
-            $imageTag = sprintf(
-                '<img class="audio-poster" alt="%s" src="%s" width="%s" height="%s" />',
-                $posterImage->getProperty('alternative'),
-                $processedImage->getPublicUrl(),
-                $processedImage->getProperty('width'),
-                $processedImage->getProperty('height')
-
-            );
-        }
-
-        $attributes = [];
-
-        if ($options->getData() !== []) {
-            $data = $options->getData();
-            array_walk($data, static function (string &$value, string $key): void {
-                $value = 'data-' . htmlspecialchars($key) . '="' . htmlspecialchars($value) . '"';
-            });
-            $attributes[] = implode(' ', $data);
-        }
-        if ($options->getControls()) {
-            $attributes[] = 'controls';
-        }
-        if ($options->getAutoPlay()) {
-            $attributes[] = 'autoplay';
-            $attributes[] = 'muted';
-        }
-        if ($options->getMute() && !$options->getAutoPlay()) {
-            $attributes[] = 'muted';
-        }
-        if ($options->getLoop()) {
-            $attributes[] = 'loop';
-        }
-        if ($options->getControlsList()) {
-            $controlsList = $options->getControlsListValueAudio();
-            $attributes[] = 'controlsList="' . htmlspecialchars($controlsList) . '"';
-        }
-
-        if ($options->getAdditionalConfig() !== []) {
-            foreach ($options->getAdditionalConfig() as $key => $value) {
-                if ($value && !in_array($key, $this->excludeAttributes, true)) {
-                    if ((int)$value !== 1) {
-                        $attributes[] = htmlspecialchars($key) . '="' . htmlspecialchars($value) . '"';
-                    } else {
-                        $attributes[] = htmlspecialchars($key);
-                    }
-                    // Ensure that the property is not set afterwards
-                    $options->set($key, false);
-                }
-            }
-        }
-
-        foreach (['class', 'dir', 'id', 'lang', 'style', 'title', 'accesskey', 'tabindex', 'onclick', 'preload'] as $key) {
-            if (!empty($options->get($key))) {
-                $attributes[] = $key . '="' . htmlspecialchars((string)$options->get($key)) . '"';
-            }
-        }
-
-        $source = htmlspecialchars($this->getSource($file));
-
-        $start = $options->getStartTime();
-        if ($start < 0) {
-            $start = 0;
-        }
-        $sourceParams = [$start];
-
-        $end = $options->getEndTime();
-        if ($end > $start) {
-            $sourceParams[] = $end;
-        }
-
-        $sourceTime = sprintf('#t=%s', implode(',', $sourceParams));
-
-        return $imageTag . sprintf(
+        return $imageTag
+            . sprintf(
                 '<audio%s><source src="%s%s" type="%s"></audio>',
                 empty($attributes) ? '' : ' ' . implode(' ', $attributes),
-                $source,
+                $src,
                 $sourceTime,
                 $file->getMimeType()
             );

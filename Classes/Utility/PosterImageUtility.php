@@ -13,6 +13,7 @@ use TYPO3\CMS\Core\Resource\FileRepository;
 use TYPO3\CMS\Core\Resource\ProcessedFile;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Service\ImageService;
+use TYPO3Fluid\Fluid\Core\ViewHelper\TagBuilder;
 
 class PosterImageUtility
 {
@@ -49,6 +50,24 @@ class PosterImageUtility
         }
 
         return empty($posterImage) ? null : $posterImage;
+    }
+
+    public function getPosterImageTag(FileInterface $file, string $cropVariant = 'default'): string
+    {
+        $posterImage = $this->getPosterImage($file, $cropVariant, false);
+        if ($posterImage instanceof FileReference) {
+            $processedImage = $this->getCropVariant($posterImage);
+
+            $tag = new TagBuilder('img');
+            $tag->addAttribute('class', 'audio-poster');
+            $tag->addAttribute('src', $processedImage->getPublicUrl());
+            $tag->addAttribute('width', $processedImage->getProperty('width'));
+            $tag->addAttribute('height', $processedImage->getProperty('height'));
+
+            return $tag->render();
+        }
+
+        return '';
     }
 
     public function getCropVariant(FileReference $fileReference, string $cropVariant = 'default'): ProcessedFile
