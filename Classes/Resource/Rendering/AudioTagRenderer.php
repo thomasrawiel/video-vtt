@@ -33,7 +33,7 @@ class AudioTagRenderer extends \TYPO3\CMS\Core\Resource\Rendering\AudioTagRender
         $options = new Options($file, $options);
 
         $posterImageUtility = GeneralUtility::makeInstance(PosterImageUtility::class);
-        $posterImage = $posterImageUtility->getPosterImage($file, false);
+        $posterImage = $posterImageUtility->getPosterImage($file);
 
         $imageTag = '';
 
