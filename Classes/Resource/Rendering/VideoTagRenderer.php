@@ -103,14 +103,20 @@ class VideoTagRenderer extends \TYPO3\CMS\Core\Resource\Rendering\VideoTagRender
 
         if ($options->getAdditionalConfig() !== []) {
             foreach ($options->getAdditionalConfig() as $key => $value) {
-                if ((bool)$value) {
-                    $attributes[] = htmlspecialchars((string)$key);
+                if ($value && !in_array($key, $this->excludeAttributes, true)) {
+                    if ((int)$value !== 1) {
+                        $attributes[] = htmlspecialchars($key) . '="' . htmlspecialchars($value) . '"';
+                    } else {
+                        $attributes[] = htmlspecialchars($key);
+                    }
+                    // Ensure that the property is not set afterwards
+                    $options->set($key, false);
                 }
             }
         }
 
         foreach (['class', 'dir', 'id', 'lang', 'style', 'title', 'accesskey', 'tabindex', 'onclick', 'preload'] as $key) {
-            if ($options->get($key)) {
+            if ($options->get($key) && $options->get($key) !== false) {
                 $attributes[] = $key . '="' . htmlspecialchars((string)$options->get($key)) . '"';
             }
         }
