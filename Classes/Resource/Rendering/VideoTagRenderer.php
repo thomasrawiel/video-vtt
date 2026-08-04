@@ -67,6 +67,10 @@ final class VideoTagRenderer implements FileRendererInterface
      */
     public function render(FileInterface $file, $width, $height, array $options = []): string
     {
+        if (($options['returnUrl'] ?? false) === true) {
+            return htmlspecialchars(GeneralUtility::makeInstance(FileUtility::class)->getAbsoluteUrl($file->getPublicUrl()), ENT_QUOTES | ENT_HTML5);
+        }
+
         $attributes = $this->attributeUtility->getVideoAttributes($file, (int)$width, (int)$height, $options);
 
         $posterImage = $this->posterImageUtility->getPosterImage($file);

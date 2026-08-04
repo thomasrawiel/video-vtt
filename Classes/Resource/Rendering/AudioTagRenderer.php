@@ -56,6 +56,10 @@ class AudioTagRenderer implements FileRendererInterface
 
     public function render(FileInterface $file, $width, $height, array $options = [])
     {
+        if (($options['returnUrl'] ?? false) === true) {
+            return htmlspecialchars(GeneralUtility::makeInstance(FileUtility::class)->getAbsoluteUrl($file->getPublicUrl()), ENT_QUOTES | ENT_HTML5);
+        }
+
         $attributes = $this->attributeUtility->getAudioAttributes($file, $options);
 
         $imageTag = $this->posterImageUtility->getPosterImageTag($file);
