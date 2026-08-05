@@ -14,18 +14,18 @@ class Options
     public function __construct(FileInterface $file, array $options = [])
     {
         $this->file = $file;
-        $options['autoplay'] = $file->getProperty('autoplay');
-        $options['mute'] = $file->getProperty('mute');
-        $options['loop'] = $file->getProperty('loop');
-        $options['showinfo'] = $file->getProperty('showinfo');
-        $options['controls'] = $file->getProperty('controls');
-        $options['controlsList'] = $file->getProperty('controlslist');
-        $options['picinpic'] = $file->getProperty('picinpic');
-        $options['lang'] = $file->getProperty('lang');
-        $options['start_time'] = $file->getProperty('start_time');
-        $options['end_time'] = $file->getProperty('end_time');
+        $options['autoplay'] = (bool)$file->getProperty('autoplay');
+        $options['mute'] = (bool)$file->getProperty('mute');
+        $options['loop'] = (bool)$file->getProperty('loop');
+        $options['showinfo'] = (bool)$file->getProperty('showinfo');
+        $options['controls'] = (bool)$file->getProperty('controls');
+        $options['controlsList'] = (int)$file->getProperty('controlslist');
+        $options['picinpic'] = (bool)$file->getProperty('picinpic');
+        $options['lang'] = (string)$file->getProperty('lang');
+        $options['start_time'] = (int)$file->getProperty('start_time');
+        $options['end_time'] = (int)$file->getProperty('end_time');
 
-        $options['no-cookie'] = 1;
+        $options['no-cookie'] = true;
 
         $this->options = $options;
     }
@@ -35,38 +35,39 @@ class Options
         return $this->options;
     }
 
-    public function get(string $key)
+    public function get(string $key): mixed
     {
         return $this->options[$key] ?? null;
     }
 
-    public function set(string $key, $value) {
+    public function set(string $key, mixed $value)
+    {
         $this->options[$key] = $value;
     }
 
-    public function getAutoPlay(): int
+    public function getAutoPlay(): bool
     {
-        return $this->options['autoplay'] ?? 0;
+        return (bool)($this->options['autoplay'] ?? false);
     }
 
-    public function getMute(): int
+    public function getMute(): bool
     {
-        return $this->options['mute'] ?? 0;
+        return (bool)($this->options['mute'] ?? false);
     }
 
-    public function getLoop(): int
+    public function getLoop(): bool
     {
-        return $this->options['loop'] ?? 0;
+        return (bool)($this->options['loop'] ?? false);
     }
 
-    public function getShowInfo(): int
+    public function getShowInfo(): bool
     {
-        return $this->options['showinfo'] ?? 0;
+        return (bool)($this->options['showinfo'] ?? false);
     }
 
-    public function getControls(): int
+    public function getControls(): bool
     {
-        return $this->options['controls'] ?? 0;
+        return (bool)($this->options['controls'] ?? false);
     }
 
     public function getControlsList(): int
@@ -123,9 +124,9 @@ class Options
     }
 
 
-    public function getPicinpic(): int
+    public function getPicinpic(): bool
     {
-        return $this->options['picinpic'] ?? 0;
+        return (bool)($this->options['picinpic'] ?? false);
     }
 
     public function getLang(): string
