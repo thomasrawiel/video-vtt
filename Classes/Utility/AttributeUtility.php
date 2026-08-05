@@ -18,12 +18,8 @@ class AttributeUtility
         if ($this->options === null) {
             $this->options = new Options($file, $options);
         }
-        $attributes = $this->getGenericMediaAttributes($file, $options);
 
-        if ($this->options->getControlsList()) {
-            $controlsList = $this->options->getControlsListValueAudio();
-            $attributes[] = 'controlsList="' . htmlspecialchars($controlsList) . '"';
-        }
+        $attributes = $this->getGenericMediaAttributes($file, $options);
 
         return array_unique($attributes);
     }
@@ -36,11 +32,6 @@ class AttributeUtility
 
         $attributes = $this->getGenericMediaAttributes($file, $options);
 
-        if ($this->options->getControlsList()) {
-            $controlsList = $this->options->getControlsListValueVideo();
-            $attributes[] = 'controlsList="' . htmlspecialchars($controlsList) . '"';
-        }
-
         if ($this->options->getAutoPlay()) {
             $attributes[] = 'playsinline';
         }
@@ -50,11 +41,11 @@ class AttributeUtility
         }
 
         if ($width > 0) {
-            $attributes[] = 'width="' . (int)$width . '"';
+            $attributes[] = 'width="' . $width . '"';
         }
 
         if ($height > 0) {
-            $attributes[] = 'height="' . (int)$height . '"';
+            $attributes[] = 'height="' . $height . '"';
         }
 
         return array_unique($attributes);
@@ -65,6 +56,8 @@ class AttributeUtility
         if ($this->options === null) {
             $this->options = new Options($file, $options);
         }
+
+        $attributes = [];
 
         if ($this->options->getAdditionalAttributes() !== []) {
             $attributes[] = GeneralUtility::implodeAttributes($this->options->getAdditionalAttributes(), true, true);
@@ -78,6 +71,10 @@ class AttributeUtility
         }
         if ($this->options->getControls()) {
             $attributes[] = 'controls';
+        }
+        if ($this->options->getControlsList()) {
+            $controlsList = $this->options->getControlsListValue();
+            $attributes[] = 'controlsList="' . htmlspecialchars($controlsList) . '"';
         }
         if ($this->options->getAutoPlay()) {
             $attributes[] = 'autoplay';
