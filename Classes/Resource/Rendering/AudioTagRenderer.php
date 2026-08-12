@@ -30,13 +30,6 @@ class AudioTagRenderer implements FileRendererInterface
 
     protected array $excludeAttributes = ['api', 'no-cookie'];
 
-    public function __construct(
-        private readonly PosterImageUtility $posterImageUtility,
-        private readonly AttributeUtility   $attributeUtility,
-    )
-    {
-    }
-
     /**
      * Check if given File(Reference) can be rendered
      *
@@ -60,12 +53,14 @@ class AudioTagRenderer implements FileRendererInterface
             return htmlspecialchars(GeneralUtility::makeInstance(FileUtility::class)->getAbsoluteUrl($file->getPublicUrl()), ENT_QUOTES | ENT_HTML5);
         }
 
-        $attributes = $this->attributeUtility->getAudioAttributes($file, $options);
+        $attributeUtility = new AttributeUtility();
+        $attributes = $attributeUtility->getAudioAttributes($file, $options);
+        $sourceTime = $attributeUtility->getSourceTime($file, $options);
 
-        $imageTag = $this->posterImageUtility->getPosterImageTag($file);
+        $posterImageUtility = new PosterImageUtility();
+        $imageTag = $posterImageUtility->getPosterImageTag($file);
 
         $src = htmlspecialchars($this->getSource($file));
-        $sourceTime = $this->attributeUtility->getSourceTime($file, $options);
 
         return $imageTag
             . sprintf(

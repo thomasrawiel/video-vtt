@@ -30,14 +30,6 @@ final class VideoTagRenderer implements FileRendererInterface
     protected array $possibleMimeTypes = ['video/mp4', 'video/webm', 'video/ogg', 'video/x-m4v', 'application/ogg'];
 
 
-    public function __construct(
-        private readonly TracksUtility      $tracksUtility,
-        private readonly PosterImageUtility $posterImageUtility,
-        private readonly AttributeUtility   $attributeUtility,
-    )
-    {
-    }
-
     public function getPriority(): int
     {
         return 7;
@@ -71,12 +63,18 @@ final class VideoTagRenderer implements FileRendererInterface
             return htmlspecialchars(GeneralUtility::makeInstance(FileUtility::class)->getAbsoluteUrl($file->getPublicUrl()), ENT_QUOTES | ENT_HTML5);
         }
 
-        $attributes = $this->attributeUtility->getVideoAttributes($file, (int)$width, (int)$height, $options);
+        $attributeUtility = new AttributeUtility();
+        $attributes = $attributeUtility->getVideoAttributes($file, (int)$width, (int)$height, $options);
+        $sourceTime = $attributeUtility->getSourceTime($file, $options);
 
-        $posterImage = $this->posterImageUtility->getPosterImage($file);
+        $posterImageUtility = new PosterImageUtility();
+        $posterImage = $posterImageUtility->getPosterImage($file);
         if ($posterImage instanceof \TYPO3\CMS\Core\Resource\ProcessedFile) {
             $attributes[] = 'poster="' . $posterImage->getPublicUrl() . '"';
         }
+
+        $tracksUtility = new TracksUtility();
+        $tracks = $tracksUtility->getTracks($file);
 
         $src = htmlspecialchars($this->getSource($file));
         $noVideoSupport = sprintf('<p>%s <a href="%s">%s</a></p>',
@@ -89,9 +87,9 @@ final class VideoTagRenderer implements FileRendererInterface
             '<video%s><source src="%s%s" type="%s">%s%s</video>',
             $attributes !== [] ? ' ' . implode(' ', $attributes) : '',
             $src,
-            $this->attributeUtility->getSourceTime($file, $options),
+            $sourceTime,
             $file->getMimeType(),
-            $this->tracksUtility->getTracks($file),
+            $tracks,
             $noVideoSupport
         );
     }
