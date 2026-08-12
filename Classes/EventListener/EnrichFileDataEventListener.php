@@ -63,7 +63,7 @@ class EnrichFileDataEventListener
 
     private function getTracks(FileInterface $file): array
     {
-        $tracksUtilties = new TracksUtility();
+        $tracksUtility = new TracksUtility();
         $tracks = $tracksUtility->getTracksArray($file);
 
         foreach ($tracks as $key => $track) {
