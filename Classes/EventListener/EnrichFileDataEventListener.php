@@ -18,9 +18,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 class EnrichFileDataEventListener
 {
     public function __construct(
-        private readonly PosterImageUtility $posterImageUtility,
-        private readonly TracksUtility      $tracksUtility,
-        private readonly FileUtility        $fileUtility)
+        private readonly FileUtility $fileUtility)
     {
     }
 
@@ -53,7 +51,9 @@ class EnrichFileDataEventListener
             new PosterImageCropVariantEvent($cropVariant, EnrichFileDataEventListener::class)
         )->getCropVariant();
 
-        $posterImage = $this->posterImageUtility->getPosterImage($file, $cropVariant, false);
+        $posterImageUtility = new PosterImageUtility();
+        $posterImage = $posterImageUtility->getPosterImage($file, $cropVariant, false);
+
         if ($posterImage === null) {
             return null;
         }
@@ -63,12 +63,13 @@ class EnrichFileDataEventListener
 
     private function getTracks(FileInterface $file): array
     {
-        $tracks = $this->tracksUtility->getTracksArray($file);
-        
-        foreach($tracks as $key => $track) {
+        $tracksUtilties = new TracksUtility();
+        $tracks = $tracksUtility->getTracksArray($file);
+
+        foreach ($tracks as $key => $track) {
             $tracks[$key]['public_url'] = $this->fileUtility->getAbsoluteUrl($track['public_url']);
         }
-        
+
         return $tracks;
     }
 }
