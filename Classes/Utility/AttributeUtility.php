@@ -87,6 +87,10 @@ class AttributeUtility
             $attributes[] = 'loop';
         }
 
+        if ($this->options->get('alt')) {
+            $attributes[] = 'aria-label="' . $this->options->get('alt') . '"';
+        }
+
         if ($this->options->getAdditionalConfig() !== []) {
             foreach ($this->options->getAdditionalConfig() as $key => $value) {
                 if ($value && !in_array($key, $this->excludeAttributes, true)) {
